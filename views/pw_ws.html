@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawStay - Premium Pet Boarding & Daycare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2D2D2D;
+            background: #FFF8F0;
+        }
+
+        /* Header Styles */
+        header {
+            background: #FFFFFF;
+            color: #2D2D2D;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #8B6F47;
+        }
+
+        .logo-icon {
+         
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #2D2D2D;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: #8B6F47;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .login-link {
+            color: #2D2D2D;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            background: #8B6F47;
+            padding: 12px 28px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #6F5838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139,111,71,0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: #FFF8F0;
+            padding: 80px 40px;
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #2D2D2D;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #666;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s 0.2s both;
+        }
+
+        .hero-image {
+            flex: 1;
+            animation: fadeInUp 0.8s 0.3s both;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+
+        .search-field {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-row input, .search-row select {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-button {
+            width: 100%;
+            background: #8B6F47;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background: #6F5838;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            color: #2D2D2D;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            color: #8B6F47;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .service-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .features {
+            background: white;
+            padding: 80px 40px;
+            margin-top: 60px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            background: #FFF8F0;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature-item:hover {
+            border-color: #8B6F47;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139,111,71,0.15);
+        }
+
+        .feature-item span {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            color: #2D2D2D;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .feature-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: #2D2D2D;
+            color: #E0E0E0;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #8B6F47;
+            font-size: 20px;
+        }
+
+        .footer-section p, .footer-section li {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            color: #B0B0B0;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #B0B0B0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #8B6F47;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: #B0B0B0;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            background: #8B6F47;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-social a:hover {
+            background: #6F5838;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                font-size: 14px;
+            }
+
+            nav {
+                padding: 15px 20px;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🐾</div>
+                PawStay
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#pet-sitters">Pet Sitters</a></li>
+                <li><a href="#become-sitter">Become a Sitter</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+            </ul>
+            <div class="nav-right">
+                <a href="#login" class="login-link">Login</a>
+                <a href="#find-sitter" class="cta-button">Find a Pet Sitter</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Find Trusted Pet Care Near You — Anytime, Anywhere.</h1>
+            <p>Connect with verified pet sitters, walkers, and boarding facilities. Real-time booking, GPS tracking, and 24/7 support for complete peace of mind.</p>
+            
+            <div class="search-box">
+                <input type="text" class="search-field" placeholder="📍 Enter your location">
+                <div class="search-row">
+                    <select class="search-field">
+                        <option>🔍 Pet Type</option>
+                        <option>Dog</option>
+                        <option>Cat</option>
+                        <option>Other</option>
+                    </select>
+                    <input type="text" class="search-field" placeholder="📅 Check-in / Check-out">
+                </div>
+                <button class="search-button">Search Pet Sitters</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Crect fill='%23FFF8F0' width='600' height='600'/%3E%3Ccircle cx='300' cy='300' r='200' fill='%238B6F47' opacity='0.1'/%3E%3Ccircle cx='250' cy='250' r='80' fill='%238B6F47' opacity='0.2'/%3E%3Ccircle cx='350' cy='350' r='100' fill='%238B6F47' opacity='0.15'/%3E%3Ctext x='300' y='320' font-size='120' text-anchor='middle' fill='%238B6F47'%3E🐕🐈%3C/text%3E%3C/svg%3E" alt="Happy pets">
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <div class="container" id="pet-sitters">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-subtitle">We provide comprehensive care for your furry friends with professional staff and verified pet sitters you can trust.</p>
+        
+        <div class="services">
+            <div class="service-card">
+                <div class="service-icon">🏠</div>
+                <h3>Pet Boarding</h3>
+                <p>Comfortable, safe homes with loving pet sitters. Your pet will enjoy spacious accommodations and plenty of attention in a real home environment.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🚶</div>
+                <h3>Dog Walking</h3>
+                <p>Professional dog walkers available on-demand. GPS tracking and real-time updates so you always know where your pup is during their walk.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🏡</div>
+                <h3>Pet Sitting</h3>
+                <p>In-home pet care while you're away. Verified sitters will visit your home to feed, play with, and care for your pets in their familiar environment.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features" id="how-it-works">
+        <h2 class="section-title">Why Choose PawStay?</h2>
+        <p class="section-subtitle">Join thousands of happy pet parents who trust PawStay for their pet care needs</p>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span>✅</span>
+                <h4>Verified Sitters</h4>
+                <p>All pet sitters are background checked and verified for your peace of mind</p>
+            </div>
+            <div class="feature-item">
+                <span>📍</span>
+                <h4>GPS Tracking</h4>
+                <p>Real-time GPS tracking for dog walks so you know exactly where your pet is</p>
+            </div>
+            <div class="feature-item">
+                <span>💬</span>
+                <h4>24/7 Support</h4>
+                <p>Round-the-clock customer support whenever you need assistance</p>
+            </div>
+            <div class="feature-item">
+                <span>📱</span>
+                <h4>Real-time Updates</h4>
+                <p>Get photos, videos, and updates from your pet sitter throughout the day</p>
+            </div>
+            <div class="feature-item">
+                <span>🔒</span>
+                <h4>Secure Booking</h4>
+                <p>Safe and secure payment processing with booking protection</p>
+            </div>
+            <div class="feature-item">
+                <span>⭐</span>
+                <h4>Reviews & Ratings</h4>
+                <p>Read reviews from other pet parents to find the perfect sitter</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About PawStay</h3>
+                <p>PawStay connects pet parents with trusted, verified pet sitters and care providers. Our platform makes it easy to find reliable pet care near you, with real-time booking and 24/7 support.</p>
+                <div class="footer-social">
+                    <a href="#">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                    <a href="#">▶️</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#pet-sitters">Find Pet Sitters</a></li>
+                    <li><a href="#become-sitter">Become a Sitter</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">Pet Boarding</a></li>
+                    <li><a href="#">Dog Walking</a></li>
+                    <li><a href="#">Pet Sitting</a></li>
+                    <li><a href="#">Cat Care</a></li>
+                    <li><a href="#">Drop-in Visits</a></li>
+                    <li><a href="#">House Sitting</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>📧 Email: support@pawstay.org</p>
+                <p>📞 Phone: (555) PAW-STAY</p>
+                <p>💬 Live Chat: Available 24/7</p>
+                <p>🕐 Hours: Always Open</p>
+                <p style="margin-top: 25px;"><a href="#find-sitter" class="cta-button">Find a Pet Sitter</a></p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 PawStay. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Trust & Safety</a></p>
+        </div>
+    </footer>
+</body>
+</html>

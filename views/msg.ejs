@@ -1,0 +1,23 @@
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="/tailwind/output.css" rel="stylesheet">
+    <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+</head>
+
+<body class="bg-gray-300 min-h-screen flex flex-col">
+    <%- include('header', { user }) %>
+
+    <main class="flex-1">
+        <section class="featured flex items-center justify-center h-full">
+            <h1 id="myHeader" class="text-4xl font-bold text-center text-red-800">
+                <%= title %>
+            </h1>
+        </section>
+    </main>
+</body>
+
+<h2>
+    <%= title %>
+</h2>

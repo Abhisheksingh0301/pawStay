@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PawStay - Premium Pet Boarding & Daycare</title>
+
+    <link href="/tailwind/output.css" rel="stylesheet">
+
+    <!-- Optional custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B6F47',
+                        primaryDark: '#6F5838',
+                        cream: '#FFF8F0',
+                        dark: '#2D2D2D'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-amber-50 text-dark font-sans">
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-2xl font-semibold text-primary">
+                🐾 PawStay
+            </div>
+
+            <ul class="flex flex-wrap items-center gap-6 text-sm font-medium">
+                <li><a href="#home" class="hover:text-blue-800  text-xl font-serif">Home</a></li>
+                <li><a href="#how-it-works" class="hover:text-blue-800  text-xl font-serif">How It Works</a></li>
+                <li><a href="#pet-sitters" class="hover:text-blue-800   text-xl font-serif">Pet Sitters</a></li>
+                <li><a href="#become-sitter" class="hover:text-blue-800 text-xl font-serif">Become a Sitter</a></li>
+                <li><a href="#pricing" class="hover:text-blue-800   text-xl font-serif">Pricing</a></li>
+            </ul>
+
+            <div class="flex items-center gap-4">
+                <% if (!user) { %>
+                    <a href="/login"
+                        class="text-blue-600 hover:text-blue-800 text-sm sm:text-base font-bold hover:underline">
+                        Login
+                    </a>
+
+                    <a href="/signup"
+                        class="text-blue-600 hover:text-blue-800 text-sm sm:text-base font-bold hover:underline">
+                        Sign Up
+                    </a>
+                    <% } else { %>
+                        <span class="text-blue-600 hover:text-blue-800 text-sm sm:text-base">
+                            Welcome,
+                            <span class="font-semibold">
+                                <%= user.first_name %>
+                            </span>
+                        </span>
+
+                        <a href="/logout"
+                            class="ml-4 text-red-600 hover:text-red-800 text-sm sm:text-base font-bold hover:underline">
+                            Logout
+                        </a>
+                        <% } %>
+
+
+                            <a href="#find-sitter"
+                                class="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:bg-primaryDark transition">
+                                Find a Pet Sitter
+                            </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section id="home" class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-16">
+
+        <div class="flex-1">
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                Find Trusted Pet Care Near You — Anytime, Anywhere.
+            </h1>
+            <p class="text-gray-600 text-lg mb-10">
+                Connect with verified pet sitters, walkers, and boarding facilities.
+                Real-time booking, GPS tracking, and 24/7 support.
+            </p>
+
+            <!-- Search Box -->
+            <div class="bg-white p-8 rounded-xl shadow-lg space-y-4">
+                <input type="text" placeholder="📍 Enter your location"
+                    class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+
+                <div class="flex flex-col md:flex-row gap-4">
+                    <select class="w-full border rounded-lg px-4 py-3">
+                        <option>🔍 Pet Type</option>
+                        <option>Dog</option>
+                        <option>Cat</option>
+                        <option>Other</option>
+                    </select>
+
+                    <input type="text" placeholder="📅 Check-in / Check-out"
+                        class="w-full border rounded-lg px-4 py-3" />
+                </div>
+
+                <button
+                    class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primaryDark transition">
+                    Search Pet Sitters
+                </button>
+            </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="flex-1">
+            <img class="rounded-2xl shadow-xl w-full" src="/images/pet-sitter1.jpg" alt="Happy pets">
+        </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section id="pet-sitters" class="max-w-7xl mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold text-center mb-4">Our Services</h2>
+        <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">
+            Professional, loving care for your pets by verified sitters you can trust.
+        </p>
+
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div class="bg-white p-8 rounded-xl shadow hover:-translate-y-2 transition text-center">
+                <div class="text-5xl mb-4">🏠</div>
+                <h3 class="text-primary text-xl font-semibold mb-3">Pet Boarding</h3>
+                <p class="text-gray-600">
+                    Safe, comfortable home boarding with loving sitters.
+                </p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow hover:-translate-y-2 transition text-center">
+                <div class="text-5xl mb-4">🚶</div>
+                <h3 class="text-primary text-xl font-semibold mb-3">Dog Walking</h3>
+                <p class="text-gray-600">
+                    On-demand walks with real-time GPS tracking.
+                </p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow hover:-translate-y-2 transition text-center">
+                <div class="text-5xl mb-4">🏡</div>
+                <h3 class="text-primary text-xl font-semibold mb-3">Pet Sitting</h3>
+                <p class="text-gray-600">
+                    In-home care while you’re away.
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- ================= FEATURES ================= -->
+    <section id="how-it-works" class="bg-white py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <h2 class="text-4xl font-bold text-center mb-4">
+                Why Choose PawStay?
+            </h2>
+
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-16">
+                Join thousands of happy pet parents who trust PawStay for their pet care needs
+            </p>
+
+            <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+                <!-- Feature Item -->
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">✅</span>
+                    <h4 class="text-lg font-semibold mb-2">Verified Sitters</h4>
+                    <p class="text-gray-600">
+                        All pet sitters are background checked and verified for your peace of mind
+                    </p>
+                </div>
+
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">📍</span>
+                    <h4 class="text-lg font-semibold mb-2">GPS Tracking</h4>
+                    <p class="text-gray-600">
+                        Real-time GPS tracking for dog walks so you know exactly where your pet is
+                    </p>
+                </div>
+
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">💬</span>
+                    <h4 class="text-lg font-semibold mb-2">24/7 Support</h4>
+                    <p class="text-gray-600">
+                        Round-the-clock customer support whenever you need assistance
+                    </p>
+                </div>
+
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">📱</span>
+                    <h4 class="text-lg font-semibold mb-2">Real-time Updates</h4>
+                    <p class="text-gray-600">
+                        Get photos, videos, and updates from your pet sitter throughout the day
+                    </p>
+                </div>
+
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">🔒</span>
+                    <h4 class="text-lg font-semibold mb-2">Secure Booking</h4>
+                    <p class="text-gray-600">
+                        Safe and secure payment processing with booking protection
+                    </p>
+                </div>
+
+                <div class="bg-amber-50 p-8 rounded-xl text-center border-2 border-transparent
+                  hover:border-primary hover:-translate-y-1 hover:shadow-lg transition">
+                    <span class="text-4xl block mb-4">⭐</span>
+                    <h4 class="text-lg font-semibold mb-2">Reviews & Ratings</h4>
+                    <p class="text-gray-600">
+                        Read reviews from other pet parents to find the perfect sitter
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-stone-700 text-gray-300 px-6 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto grid gap-10 md:grid-cols-4">
+            <div>
+                <h3 class="text-yellow-500 text-lg font-semibold mb-4">About PawStay</h3>
+                <p class="text-sm leading-relaxed">
+                    Connecting pet parents with trusted, verified sitters worldwide.PawStay connects pet parents with
+                    trusted, verified pet sitters and care providers. Our platform makes it easy to find reliable pet
+                    care near you, with real-time booking and 24/7 support.
+                </p>
+                <div class="flex gap-4 mt-6">
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full
+            bg-primary text-white hover:bg-stone-500 bg-stone-400
+            hover:-translate-y-1 transition">
+                        📘
+                    </a>
+
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full
+            bg-primary text-white hover:bg-stone-500 bg-stone-400
+            hover:-translate-y-1 transition">
+                        📷
+                    </a>
+
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full
+            bg-primary text-white hover:bg-stone-500 bg-stone-400
+            hover:-translate-y-1 transition">
+                        🐦
+                    </a>
+
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full
+            bg-primary text-white hover:bg-stone-500 bg-stone-400
+            hover:-translate-y-1 transition">
+                        ▶️
+                    </a>
+                </div>
+
+            </div>
+
+            <div>
+                <h3 class="text-yellow-500 text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-red-400">Home</a></li>
+                    <li><a href="#" class="hover:text-red-400">How It Works</a></li>
+                    <li><a href="#" class="hover:text-red-400">Find a Pet Sitter</a></li>
+                    <li><a href="#" class="hover:text-red-400">Become a sitter</a></li>
+                    <li><a href="#" class="hover:text-red-400">Pricing</a></li>
+                    <li><a href="#" class="hover:text-red-400">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-yellow-500 text-lg font-semibold mb-4">Services</h3>
+                <ul class="space-y-2 text-sm">
+                    <li class="hover:text-red-400">Pet Boarding</li>
+                    <li class="hover:text-red-400">Dog Walking</li>
+                    <li class="hover:text-red-400">Pet Sitting</li>
+                    <li class="hover:text-red-400">Cat care</li>
+                    <li class="hover:text-red-400">Drop-in visits</li>
+                    <li class="hover:text-red-400">House-sitting</li>
+                </ul>
+            </div>
+
+            <div>
+
+                <h3 class="text-yellow-500 text-lg font-semibold mb-4">Contact</h3>
+                <p class="text-sm">📧 support@pawstay.org</p>
+                <p class="text-sm">📞 (555) PAW-STAY</p>
+                <p>💬 Live Chat: Available 24/7</p>
+                <p>🕐 Hours: Always Open</p>
+                <p class="mt-4 rounded-full text-center p-3 bg-orange-700 hover:bg-orange-800"><a href="#find-sitter"
+                        class="cta-button">Find a Pet Sitter</a></p>
+            </div>
+        </div>
+
+        <div class="border-t border-white/10 mt-12 pt-6 text-center text-sm">
+            © 2025 PawStay. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+
+</html>

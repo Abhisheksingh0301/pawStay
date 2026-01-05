@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link href="/tailwind/output.css" rel="stylesheet">
+  <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+</head>
+
+<body>
+  <%- include('header', { user }) %>
+    <div class="flex flex-col md:flex-row  gap-10 p-6 w-full max-w-6xl mx-auto bg-orange-100">
+
+      <div class="w-full md:w-1/2">
+        <p class="font-serif font-bold text-4xl leading-relaxed">
+          Find Trusted Pet Care Near You — Anytime, Anywhere.
+        </p>
+
+        <p class="font-serif text-2xl mt-4 leading-relaxed text-justify">
+          Connect with verified pet sitters, walkers, and boarding facilities.
+          Real-time booking, GPS tracking, and 24/7 support.
+        </p>
+      </div>
+
+      <div class="w-full md:w-1/2 flex justify-center">
+        <img src="/images/pet-sitter1.jpg" class="w-full max-w-md rounded-xl shadow-lg">
+      </div>
+
+    </div>
+
+    </p>
+</body>
+
+</html>

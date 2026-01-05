@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= title %>
+  </title>
+  <link href="/tailwind/output.css" rel="stylesheet">
+  <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+  <%- include('header', { user }) %>
+    <!-- HEADER -->
+    <header class="bg-blue-600 text-white p-6">
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-2xl font-bold">Pet Sitter Dashboard</h1>
+        <p class="text-sm mt-1">
+          Welcome,
+          <span class="font-semibold">
+            <%= user.name %>
+          </span>
+          (User ID: <%= user.user_id %>)
+        </p>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-6xl mx-auto p-6">
+
+      <!-- IF PROVIDER PROFILE DOES NOT EXIST -->
+      <% if (!provider) { %>
+        <div class="bg-white rounded-lg shadow p-8 text-center">
+          <h2 class="text-xl font-semibold text-red-600 mb-4">
+            Profile Incomplete
+          </h2>
+
+          <p class="text-gray-700 mb-6">
+            You haven’t completed your pet sitter profile yet.
+            Please add your details to start receiving bookings.
+          </p>
+
+          <a href="/pet_sitter_create-profile/<%= user.user_id %>"
+            class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition">
+            Complete Profile
+          </a>
+        </div>
+        <% } else { %>
+
+          <!-- DASHBOARD CONTENT (PROVIDER EXISTS) -->
+
+          <!-- PROFILE CARD -->
+          <section class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
+
+            <div class="flex flex-col md:flex-row items-start gap-6">
+              <!-- Profile Image -->
+              <img src="<%= provider.profile_picture || '/images/default-profile.png' %>" alt="Profile Picture"
+                class="w-32 h-32 rounded-full object-cover border mx-auto md:mx-0" />
+
+              <!-- Profile Details -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <p>
+                  <span class="font-semibold text-gray-600">Bio:</span>
+                  <%= provider.bio || 'Not provided' %>
+                </p>
+
+                <p>
+                  <span class="font-semibold text-gray-600">Certifications:</span>
+                  <%= provider.certifications || 'None' %>
+                </p>
+
+                <p>
+                  <span class="font-semibold text-gray-600">Experience:</span>
+                  <%= provider.years_of_experience || 0 %> years
+                </p>
+
+                <p>
+                  <span class="font-semibold text-gray-600">Location:</span>
+                  <%= user.location || 'Not provided' %>
+                </p>
+
+                <!-- New Item 1 -->
+                <p>
+                  <span class="font-semibold text-gray-600">Phone:</span>
+                  <%= user.phone_number || 'Not specified' %>
+                </p>
+
+                <!-- New Item 2 -->
+                <p>
+                  <span class="font-semibold text-gray-600">Email:</span>
+                  <%= user.email || 'Not specified' %>
+                </p>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- SERVICES CARD -->
+          <section class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Services</h2>
+
+            <p class="mb-2 font-semibold text-gray-600">
+              Services Offered:
+            </p>
+
+            <p class="text-gray-700">
+              <%= provider.services_offered || 'No services listed' %>
+            </p>
+
+            <p class="mt-4">
+              <span class="font-semibold text-gray-600">Price per Service:</span>
+              <span class="text-green-600 font-bold">
+                $ <%= provider.price_per_service || 0 %>
+              </span>
+            </p>
+          </section>
+
+          <!-- RATING CARD -->
+          <section class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Performance</h2>
+
+            <p>
+              <span class="font-semibold text-gray-600">Rating:</span>
+              <span class="text-yellow-500 font-bold">
+                <%= provider.rating ? provider.rating.toFixed(1) : 'Not rated yet' %> ⭐
+              </span>
+            </p>
+          </section>
+
+          <!-- ACTIONS -->
+          <section class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Actions</h2>
+
+            <div class="flex gap-4 flex-wrap">
+              <a href="/pet_sitter/edit-profile/<%= user.user_id %>"
+                class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition">
+                Edit Profile
+              </a>
+
+              <a href="/pet_sitter/bookings"
+                class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+                View Bookings
+              </a>
+            </div>
+          </section>
+
+          <% } %>
+
+    </main>
+
+</body>
+
+</html>

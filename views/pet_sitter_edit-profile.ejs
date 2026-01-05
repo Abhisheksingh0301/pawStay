@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Pet Sitter Profile</title>
+    <link href="/tailwind/output.css" rel="stylesheet">
+    <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <%- include('header', { user }) %>
+
+        <div class="bg-blue-600 text-white py-4">
+            <div class="max-w-7xl mx-auto px-6">
+                <h1 class="text-2xl font-bold">Edit Pet Sitter Profile</h1>
+            </div>
+        </div>
+
+        <main class="flex-1 flex items-center justify-center px-6">
+            <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-xl">
+
+                <form action="/pet_sitter/edit-profile/<%= user.user_id %>" method="POST" class="space-y-6">
+
+                    <!-- BIO -->
+                    <div>
+                        <label class="block font-semibold mb-2">Bio</label>
+                        <textarea name="bio" rows="4" required
+                            class="w-full border rounded px-3 py-2"><%= provider.bio %></textarea>
+                    </div>
+
+                    <!-- CERTIFICATIONS -->
+                    <div>
+                        <label class="block font-semibold mb-2">Certifications</label>
+                        <input type="text" name="certifications" value="<%= provider.certifications %>"
+                            class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <!-- EXPERIENCE -->
+                    <div>
+                        <label class="block font-semibold mb-2">Years of Experience</label>
+                        <input type="number" name="years_of_experience" min="0" required
+                            value="<%= provider.years_of_experience %>" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <!-- SERVICES -->
+                    <div>
+                        <label class="block font-semibold mb-2">Services Offered</label>
+
+                        <select name="services_offered[]" multiple class="w-full h-40 border rounded px-3 py-2">
+
+                            <% const services=(provider.services_offered || '' ) .split(',') .map(s=> s.trim());
+                                %>
+
+                                <option value="Dog_walking" <%=services.includes('Dog_walking') ? 'selected' : '' %>>Dog
+                                    Walking</option>
+                                <option value="Pet_boarding" <%=services.includes('Pet_boarding') ? 'selected' : '' %>
+                                    >Pet Boarding</option>
+                                <option value="Pet_daycare" <%=services.includes('Pet_daycare') ? 'selected' : '' %>>Pet
+                                    Daycare</option>
+                                <option value="Overnight_care" <%=services.includes('Overnight_care') ? 'selected' : ''
+                                    %>>Overnight Care</option>
+                                <option value="Drop_in_visits" <%=services.includes('Drop_in_visits') ? 'selected' : ''
+                                    %>>Drop-in Visits</option>
+                        </select>
+                    </div>
+
+
+                    <!-- PRICE -->
+                    <div>
+                        <label class="block font-semibold mb-2">Price per Service ($)</label>
+                        <input type="number" step="0.01" min="0" name="price_per_service"
+                            value="<%= provider.price_per_service %>" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="flex justify-end gap-4 pt-4">
+                        <a href="/pet_sitter_dashboard" class="px-5 py-2 border rounded">Cancel</a>
+
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                            Update Profile
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </main>
+
+</body>
+
+</html>
