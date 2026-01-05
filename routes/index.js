@@ -391,7 +391,8 @@ router.get('/pet_sitter/edit-profile/:userId', (req, res) => {
 
 
 
-//Pet Sitter edit profile -post method
+
+// Pet Sitter edit profile - POST method
 router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
   const userId = req.params.userId;
 
@@ -399,9 +400,13 @@ router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
     bio,
     certifications,
     years_of_experience,
-    price_per_service
+    price_per_service,
+    location,
+    first_name,
+    last_name,
+    phone
   } = req.body;
-
+  // console.log('Received form data:', req.body);
   const services_offered = req.body['services_offered[]']
     ? Array.isArray(req.body['services_offered[]'])
       ? req.body['services_offered[]'].join(', ')
@@ -410,33 +415,51 @@ router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
 
   console.log('Services Offered:', services_offered);
 
-  db.run(
-    `UPDATE providers
-     SET bio = ?,
-         certifications = ?,
-         years_of_experience = ?,
-         services_offered = ?,
-         price_per_service = ?
-     WHERE user_id = ?`,
-    [
-      bio,
-      certifications,
-      years_of_experience,
-      services_offered,
-      price_per_service,
-      userId
-    ],
-    (err) => {
-      if (err) {
-        return res.status(500).send('Failed to update profile');
+  db.serialize(() => {
+    db.run('BEGIN TRANSACTION');
+
+    db.run(
+      `UPDATE providers
+       SET bio = ?,
+           certifications = ?,
+           years_of_experience = ?,
+           services_offered = ?,
+           price_per_service = ?
+       WHERE user_id = ?`,
+      [
+        bio,
+        certifications,
+        years_of_experience,
+        services_offered,
+        price_per_service,
+        userId
+      ],
+      function (err) {
+        if (err) {
+          db.run('ROLLBACK');
+          return res.status(500).send('Failed to update providers table');
+        }
+
+        db.run(
+          `UPDATE users
+           SET first_name = ?, last_name = ?, phone_number = ?, location = ?
+           WHERE user_id = ?`,
+          [first_name, last_name, phone, location, userId],
+          function (err) {
+            if (err) {
+              db.run('ROLLBACK');
+              return res.status(500).send('Failed to update users table');
+            }
+
+            db.run('COMMIT', () => {
+              res.redirect('/pet_sitter_dashboard');
+            });
+          }
+        );
       }
-
-      res.redirect('/pet_sitter_dashboard');
-    }
-  );
+    );
+  });
 });
-
-
 
 //Pet owner dashboard
 router.get('/pet-owner/dashboard', (req, res) => {
