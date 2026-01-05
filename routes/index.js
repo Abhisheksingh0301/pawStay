@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require("../db/database");
+const auth = require('./middleware/auth');
 
 const multer = require('multer');
 const path = require('path');
@@ -38,82 +39,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-
-//Signup get method
-router.get('/signup', async (req, res) => {
-  try {
-    res.render('signup', { title: "Join us..", user: req.session.user || null });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
-// Signup post form
-router.post("/signup", async (req, res) => {
-  try {
-    const { txtfirstname, txtlstname, txtUserType, txtemail, txtphone, txtpwd, txtcnfrmpwd } = req.body;
-
-    // 1. Check duplicate user (by email)
-    const checkStmt = db.prepare(`
-      SELECT COUNT(*) AS count
-      FROM users
-      WHERE email = ?
-    `);
-
-    const { count } = checkStmt.get(txtemail);
-
-    if (count > 0) {
-      console.log("Duplicate name");
-      return res.render("msg", {
-        title: "Duplicate name", user: req.session.user || null
-      });
-    }
-
-    // 2. Check password match
-    if (txtpwd !== txtcnfrmpwd) {
-      return res.render("msg", {
-        title: "Password didn't match", user: req.session.user || null
-      });
-    }
-
-    // 3. Hash password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(txtpwd, saltRounds);
-
-    // 4. Insert new user
-    const insertStmt = db.prepare(`
-      INSERT INTO users (
-        user_type,
-        first_name,
-        last_name,
-        email,
-        phone_number,
-        password
-      )
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
-
-    insertStmt.run(
-      txtUserType,
-      txtfirstname,
-      txtlstname,
-      txtemail,
-      txtphone,
-      hashedPassword
-    );
-
-
-    res.render("msg", {
-      title: "Signup successful, now click on Login link", user: req.session.user || null
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal server error");
-  }
-});
 
 // Login get method
 router.get('/login', (req, res) => {
@@ -178,11 +103,7 @@ router.post('/login', async (req, res) => {
   }
 });
 //Show profile page to create profile for pet sitter --get--
-router.get('/pet_sitter_create-profile/:userId', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
-
+router.get('/pet_sitter_create-profile/:userId', auth, (req, res) => {
   const userId = req.params.userId;
 
   // Get user
@@ -216,12 +137,8 @@ router.get('/pet_sitter_create-profile/:userId', (req, res) => {
 //Pet sitter create profile post method
 router.post(
   '/pet_sitter/create-profile',
-  upload.single('profile_picture'),
+  upload.single('profile_picture'), auth,
   (req, res) => {
-
-    if (!req.session.userId) {
-      return res.redirect('/login');
-    }
 
     const {
       user_id,
@@ -275,14 +192,8 @@ router.post(
   }
 );
 
-router.get('/pet_sitter_dashboard', (req, res) => {
+router.get('/pet_sitter_dashboard', auth, (req, res) => {
 
-  // 1. Check login
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
-
-  // 2. Load user from DB using session userId
   db.get(
     'SELECT * FROM users WHERE user_id = ?',
     [req.session.userId],
@@ -296,7 +207,7 @@ router.get('/pet_sitter_dashboard', (req, res) => {
         return res.redirect('/login');
       }
 
-      // 3. Load provider info
+      // Load provider info
       db.get(
         'SELECT * FROM providers WHERE user_id = ?',
         [user.user_id],
@@ -316,19 +227,10 @@ router.get('/pet_sitter_dashboard', (req, res) => {
     }
   );
 });
-//Logout
-router.post('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/login');
-  });
-});
+
 
 //Pet Sitter edit profile -get method
-router.get('/pet_sitter/edit-profile/:userId', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
-
+router.get('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
   const userId = req.params.userId;
 
   db.get(
@@ -389,11 +291,8 @@ router.get('/pet_sitter/edit-profile/:userId', (req, res) => {
   );
 });
 
-
-
-
 // Pet Sitter edit profile - POST method
-router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
+router.post('/pet_sitter/edit-profile/:userId',auth, (req, res) => {
   const userId = req.params.userId;
 
   const {
@@ -413,7 +312,7 @@ router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
       : req.body['services_offered[]']
     : '';
 
-  console.log('Services Offered:', services_offered);
+  //console.log('Services Offered:', services_offered);
 
   db.serialize(() => {
     db.run('BEGIN TRANSACTION');
@@ -462,10 +361,7 @@ router.post('/pet_sitter/edit-profile/:userId', (req, res) => {
 });
 
 //Pet owner dashboard
-router.get('/pet-owner/dashboard', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
+router.get('/pet-owner/dashboard', auth, (req, res) => {
 
   const userId = req.session.userId;
 
@@ -500,11 +396,25 @@ router.get('/pet-owner/dashboard', (req, res) => {
   );
 });
 
+
+
+// GET: Show edit form for a pet
+router.get('/pets/:id/edit', auth, (req, res) => {
+  const petId = req.params.id;
+
+  db.get('SELECT * FROM pets WHERE pet_id = ?', [petId], (err, pet) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    if (!pet) return res.status(404).send('Pet not found');
+
+    res.render('edit_pet', { title: `Edit ${pet.pet_name}`, pet });
+  });
+});
+
 //pet owner add pet get method
-router.post('/pets/add', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
+router.post('/pets/add', auth, (req, res) => {
 
   const {
     pet_name,
@@ -541,6 +451,27 @@ router.post('/pets/add', (req, res) => {
       res.redirect('/pet-owner/dashboard');
     }
   );
+});
+
+// Update pet (PUT)
+router.put('/pets/:id', auth, (req, res) => {
+  const petId = req.params.id;
+  const { pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records } = req.body;
+
+  const stmt = `
+    UPDATE pets
+    SET pet_name = ?, pet_type = ?, breed = ?, size = ?, age = ?, allergies = ?, behavior_notes = ?, medical_records = ?
+    WHERE pet_id = ?
+  `;
+
+  db.run(stmt, [pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records, petId], function(err) {
+    if (err) {
+      console.error('Error updating pet:', err);
+      return res.status(500).send('Database error while updating pet');
+    }
+    // Redirect back to dashboard
+    res.redirect('/pet-owner/dashboard');
+  });
 });
 
 

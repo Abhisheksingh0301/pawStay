@@ -2,49 +2,66 @@
     <title>
         <%= title %>
     </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/tailwind/output.css" rel="stylesheet">
     <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
+
 <div class="relative min-h-screen w-full">
+
     <!-- Back to Home -->
-    <a href="/" class="absolute top-6 left-6 z-20 flex items-center gap-2
-          bg-white/80 backdrop-blur-md px-4 py-2 rounded-full
-          text-gray-700 font-medium shadow
-          hover:bg-white transition">
+    <a href="/" class="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2
+            bg-white/80 backdrop-blur-md px-4 py-2 rounded-full
+            text-gray-700 font-medium shadow hover:bg-white transition">
         ← Back to Home
     </a>
 
-    <!-- Full-page background image -->
+    <!-- Background -->
     <div class="absolute inset-0 bg-cover bg-center w-full" style="background-image: url('/images/123.jpg');"></div>
 
-    <!-- Right-side form container -->
-    <div class="relative z-10 flex items-center justify-end min-h-screen pr-8 opacity-75">
-        <div class="bg-white/80 backdrop-blur-md w-full max-w-md p-8 rounded-lg shadow-lg">
+    <!-- Form Wrapper -->
+    <div class="relative z-10 flex items-center justify-center lg:justify-end
+              min-h-screen px-4 sm:px-6 lg:pr-12">
 
-            <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">
+        <!-- Form Card -->
+        <div class="bg-white/90 backdrop-blur-md
+                w-full max-w-lg
+                p-6 sm:p-8 opacity-70
+                rounded-xl shadow-xl">
+
+            <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-700">
                 <%= title %>
             </h2>
 
             <form action="/login" method="post" class="space-y-4">
 
+                <!-- Email -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="txtemail" required autocomplete="off" value="" placeholder="Email Id"
-                        class="mt-1 w-full p-2 border border-gray-500 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <input type="email" name="txtemail" required placeholder="Email ID" class="mt-1 w-full px-3 py-2 sm:py-2.5
+                   border border-gray-500 rounded-md
+                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 </div>
 
+                <!-- Password -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" name="txtpwd" required
-                        class="mt-1 w-full p-2 border border-gray-500 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <input type="password" name="txtpwd" required class="mt-1 w-full px-3 py-2 sm:py-2.5
+                   border border-gray-500 rounded-md
+                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 </div>
 
-                <div>
-                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg mt-2">
+                <!-- Actions -->
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600
+                   text-white py-2.5 rounded-lg font-semibold">
                         Login
                     </button>
-                    <div class="text-right">
-                        <a href="/signup" class="text-blue-500 hover:underline">Don't have an account? Sign Up</a>
+
+                    <div class="text-center sm:text-right mt-3">
+                        <a href="/signup" class="text-blue-500 hover:underline">
+                            Don’t have an account? Sign Up
+                        </a>
                     </div>
                 </div>
 
@@ -52,5 +69,4 @@
 
         </div>
     </div>
-
 </div>

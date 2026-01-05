@@ -24,10 +24,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session setup 
 app.use(session({
-  secret: 'singhisking', // Replace with a secure secret key
+  secret: 'singhisking', 
   resave: false,
   saveUninitialized: true
 }));
+
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/tailwind/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+  <%- include('header', { user: null }) %>
+
+  <!-- Main Container -->
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6 bg-white rounded-lg shadow mt-6 sm:mt-10">
+    
+    <!-- Title -->
+    <h1 class="text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left">
+      <%= title %>
+    </h1>
+
+    <!-- Form -->
+    <form
+      action="/pets/<%= pet.pet_id %>?_method=PUT"
+      method="POST"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <!-- Pet Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pet Name</label>
+        <input
+          type="text"
+          name="pet_name"
+          value="<%= pet.pet_name %>"
+          required
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2 capitalize">
+      </div>
+
+      <!-- Pet Type -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pet Type</label>
+        <select
+          name="pet_type"
+          required
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2">
+          <option value="dog" <%= pet.pet_type==='dog' ? 'selected' : '' %>>Dog</option>
+          <option value="cat" <%= pet.pet_type==='cat' ? 'selected' : '' %>>Cat</option>
+          <option value="exotic" <%= pet.pet_type==='exotic' ? 'selected' : '' %>>Exotic</option>
+        </select>
+      </div>
+
+      <!-- Breed -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Breed</label>
+        <input
+          type="text"
+          name="breed"
+          value="<%= pet.breed %>"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2 capitalize">
+      </div>
+
+      <!-- Size -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Size</label>
+        <select
+          name="size"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2">
+          <option value="">Select</option>
+          <option value="Small" <%= pet.size==='Small' ? 'selected' : '' %>>Small</option>
+          <option value="Medium" <%= pet.size==='Medium' ? 'selected' : '' %>>Medium</option>
+          <option value="Large" <%= pet.size==='Large' ? 'selected' : '' %>>Large</option>
+        </select>
+      </div>
+
+      <!-- Age -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Age</label>
+        <input
+          type="number"
+          name="age"
+          value="<%= pet.age %>"
+          min="0"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2">
+      </div>
+
+      <!-- Allergies -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Allergies</label>
+        <input
+          type="text"
+          name="allergies"
+          value="<%= pet.allergies %>"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2">
+      </div>
+
+      <!-- Behavior Notes -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Behavior Notes</label>
+        <textarea
+          name="behavior_notes"
+          rows="3"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2"><%= pet.behavior_notes %></textarea>
+      </div>
+
+      <!-- Medical Records -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Medical Records</label>
+        <textarea
+          name="medical_records"
+          rows="3"
+          class="mt-1 w-full rounded border border-gray-700 px-3 py-2"><%= pet.medical_records %></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="md:col-span-2 flex flex-col sm:flex-row justify-end gap-3 mt-4">
+        
+        <!-- Cancel -->
+        <a
+          href="/pet-owner/dashboard"
+          class="w-full sm:w-auto text-center bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded font-semibold">
+          Cancel
+        </a>
+
+        <!-- Update -->
+        <button
+          type="submit"
+          class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-semibold">
+          Update Pet
+        </button>
+
+      </div>
+
+    </form>
+  </main>
+</body>
+
+</html>

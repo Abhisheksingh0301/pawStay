@@ -41,7 +41,7 @@ db.serialize(() => {
     pet_name TEXT NOT NULL,
     pet_type TEXT NOT NULL CHECK (pet_type IN ('dog', 'cat', 'exotic')),
     breed TEXT,
-    size TEXT CHECK (size IN ('small', 'medium', 'large')),
+    size TEXT CHECK (size IN ('Small', 'Medium', 'Large')),
     age INTEGER CHECK (age >= 0),
     allergies TEXT,
     behavior_notes TEXT,
