@@ -6,29 +6,39 @@
     <title>Pet Sitter Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/tailwind/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" 
+      style="background-image: url('/images/rabbit.jpg');">
     <%- include('header', { user }) %>
 
         <main class="max-w-6xl mx-auto p-6">
 
             <!-- Tabs -->
-            <div class="flex space-x-4 mb-6">
+            <div class="flex justify-center sm:justify-start space-x-4 mb-6">
                 <button id="tab-my-pets"
-                    class="tab-btn bg-orange-500 text-white px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">My
-                    Pets</button>
+                    class="tab-btn bg-orange-500 text-white px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
+                    My Pets
+                </button>
                 <button id="tab-add-pets"
-                    class="tab-btn bg-gray-300 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">Add
-                    Pet</button>
+                    class="tab-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
+                    Add Pet
+                </button>
                 <button id="tab-bookings"
-                    class="tab-btn bg-gray-300 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">Bookings</button>
+                    class="tab-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
+                    Bookings
+                </button>
             </div>
+
+
+
 
             <!-- My Pets Content -->
             <div id="content-my-pets" class="tab-content">
-                <h2 class="text-xl font-semibold mb-4">My Pets</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-white">My Pets</h2>
                 <% if (pets.length===0) { %>
                     <p class="text-gray-500">You haven’t added any pets yet.</p>
                     <% } else { %>
@@ -36,7 +46,7 @@
                             <% pets.forEach(pet=> { %>
                                 <div
                                     class="bg-white/80 backdrop-blur-md border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                    <h3 class="text-xl font-bold text-amber-600 mb-2">
+                                    <h3 class="text-xl font-bold text-amber-600 mb-2 border-b-3 border-amber-400 pb-1">
                                         <%= pet.pet_name %>
                                     </h3>
                                     <div class="space-y-1 text-sm text-gray-700">
@@ -60,10 +70,18 @@
                                                             <% } %>
                                     </div>
                                     <div class="mt-4 flex justify-end">
-                                        <a href="/pets/<%= pet.pet_id %>/edit"
-                                            class="px-3 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition">
-                                            Edit
+                                        <a href="/pets/<%= pet.pet_id %>/edit" title="Edit Pet"
+                                            class="px-3 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition">
+                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        <!-- Delete Button -->
+                                        <form action="/pets/<%= pet.pet_id %>/delete" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this pet?');">
+                                            <button type="submit" title="Delete Pet"
+                                                class="px-3 py-1 mx-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                                 <% }) %>
@@ -72,11 +90,10 @@
             </div>
 
             <!-- Add Pet Content -->
-            <div id="content-add-pets" class="tab-content hidden">
-                <section class="mt-8 bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-xl font-semibold mb-4 bg-stone-300 py-2 px-2 text-center text-gray-800">Add a Pet
+            <div id="content-add-pets" class="tab-content hidden ">
+                <h2 class="text-2xl font-semibold mb-4 text-white">Add Pet
                     </h2>
-
+                <section class="mt-2 bg-white p-6 rounded-lg shadow opacity-75">
                     <form action="/pets/add" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                         <!-- Pet Name -->
@@ -145,10 +162,10 @@
 
                         <!-- Submit & Cancel Buttons -->
                         <div class="md:col-span-2 text-right space-x-2">
-                            <a href="/pet-sitter/dashboard"
-                                class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded font-semibold">Cancel</a>
+                            <a href="/pet-owner/dashboard"
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold">Cancel</a>
                             <button type="submit"
-                                class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-semibold">Add
+                                class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded font-semibold">Add
                                 Pet</button>
                         </div>
 
@@ -172,14 +189,14 @@
             tabs.forEach((tab, index) => {
                 tab.addEventListener('click', () => {
                     // Reset all buttons
-                    tabs.forEach(t => t.classList.replace('bg-orange-500', 'bg-gray-300'));
+                    tabs.forEach(t => t.classList.replace('bg-orange-500', 'bg-gray-100'));
                     tabs.forEach(t => t.classList.replace('text-white', 'text-gray-800'));
 
                     // Hide all content
                     contents.forEach(c => c.classList.add('hidden'));
 
                     // Activate current tab
-                    tab.classList.replace('bg-gray-300', 'bg-orange-500');
+                    tab.classList.replace('bg-gray-100', 'bg-orange-500');
                     tab.classList.replace('text-gray-800', 'text-white');
                     contents[index].classList.remove('hidden');
                 });

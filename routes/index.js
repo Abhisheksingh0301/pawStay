@@ -483,5 +483,20 @@ router.put('/pets/:id', auth, (req, res) => {
   });
 });
 
+// Delete a pet
+router.post('/pets/:petId/delete', auth, (req, res) => {
+    const petId = req.params.petId;
+       // Delete the pet
+        db.run(`DELETE FROM pets WHERE pet_id = ?`, [petId], (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error deleting pet');
+            }
+
+            res.redirect('/pet-owner/dashboard'); // Redirect back to dashboard after deletion
+        });
+
+});
+
 
 module.exports = router;
