@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title %>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/tailwind/output.css" rel="stylesheet">
+    <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <%- include('header', { user }) %>
+
+        <!-- MAIN -->
+        <main class="max-w-6xl mx-auto p-6">
+            <section class="mt-8 bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4 bg-stone-300 py-2 px-2 text-center text-gray-800">Add a Pet</h2>
+
+                <form action="/pets/add" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- Pet Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Pet Name</label>
+                        <input type="text" name="pet_name" required
+                            class="mt-1 w-full rounded border border-gray-700 focus:ring-orange-500 focus:border-orange-500 px-2 py-1 capitalize">
+                    </div>
+
+                    <!-- Pet Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Pet Type</label>
+                        <select name="pet_type" required class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="exotic">Exotic</option>
+                        </select>
+                    </div>
+
+                    <!-- Breed -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Breed</label>
+                        <input type="text" placeholder="Labrador Retriever, German Shepherd etc" name="breed"
+                            class="mt-1 w-full border rounded border-gray-700 px-2 py-1 capitalize">
+                    </div>
+
+                    <!-- Size -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Size</label>
+                        <select name="size" class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
+                            <option value="">Select</option>
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
+                        </select>
+                    </div>
+
+                    <!-- Age -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Age</label>
+                        <input type="number" name="age" min="0"
+                            class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
+                    </div>
+
+                    <!-- Allergies -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Allergies</label>
+                        <input type="text" name="allergies"
+                            class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
+                    </div>
+
+                    <!-- Behavior Notes -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Behavior Notes</label>
+                        <textarea name="behavior_notes" rows="3"
+                            class="mt-1 w-full rounded border border-gray-700 px-2 py-1"></textarea>
+                    </div>
+
+                    <!-- Medical Records -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Medical Records</label>
+                        <textarea name="medical_records" rows="3"
+                            class="mt-1 w-full rounded border border-gray-700 px-2 py-1"></textarea>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="md:col-span-2 text-right">
+                        <button type="submit"
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-semibold">
+                            Add Pet
+                        </button>
+                        <a href="/pet-owner/dashboard"
+                            class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded font-semibold">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </section>
+        </main>
+</body>
+
+</html>

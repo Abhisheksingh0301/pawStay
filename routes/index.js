@@ -413,6 +413,15 @@ router.get('/pets/:id/edit', auth, (req, res) => {
   });
 });
 
+// Show Add Pet form
+router.get('/pets/add', auth, (req, res) => {
+  // You can pass user info to the EJS template if needed
+  res.render('add_pets', { 
+    title: 'Add a Pet', 
+    user: { id: req.session.userId, name: req.session.userName } 
+  });
+});
+
 //pet owner add pet get method
 router.post('/pets/add', auth, (req, res) => {
 
