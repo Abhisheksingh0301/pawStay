@@ -377,7 +377,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
 
       // Get pets for this owner
       db.all(
-        'SELECT * FROM pets WHERE owner_id = ?',
+        'SELECT * FROM pets WHERE owner_id = ? ORDER BY pet_name',
         [userId],
         (err, pets) => {
           if (err) {
@@ -415,7 +415,6 @@ router.get('/pets/:id/edit', auth, (req, res) => {
 
 // Show Add Pet form
 router.get('/pets/add', auth, (req, res) => {
-  // You can pass user info to the EJS template if needed
   res.render('add_pets', { 
     title: 'Add a Pet', 
     user: { id: req.session.userId, name: req.session.userName } 
@@ -483,17 +482,16 @@ router.put('/pets/:id', auth, (req, res) => {
   });
 });
 
-// Delete a pet
+// Delete a pet from pets table
 router.post('/pets/:petId/delete', auth, (req, res) => {
     const petId = req.params.petId;
-       // Delete the pet
         db.run(`DELETE FROM pets WHERE pet_id = ?`, [petId], (err) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Error deleting pet');
             }
 
-            res.redirect('/pet-owner/dashboard'); // Redirect back to dashboard after deletion
+            res.redirect('/pet-owner/dashboard'); 
         });
 
 });
