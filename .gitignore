@@ -1,4 +1,9 @@
 
 node_modules
 /db/database.db
+
+# Ignore everything in the uploads folder
 /public/uploads/*
+
+# But do not ignore the .gitkeep file
+!/public/uploads/.gitkeep
