@@ -10,7 +10,8 @@
   <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" 
+      style="background-image: url('/images/pet-sitter-dashboard.jpg');">
   <%- include('header', { user }) %>
     <!-- HEADER -->
     <header class="bg-blue-600 text-white p-6">
@@ -51,7 +52,7 @@
           <!-- DASHBOARD CONTENT (PROVIDER EXISTS) -->
 
           <!-- PROFILE CARD -->
-          <section class="bg-white rounded-lg shadow p-6 mb-6">
+          <section class="bg-white rounded-lg shadow p-6 mb-2 opacity-70">
             <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
 
             <div class="flex flex-col md:flex-row items-start gap-6">
@@ -98,7 +99,7 @@
 
 
           <!-- SERVICES CARD -->
-          <section class="bg-white rounded-lg shadow p-6 mb-6">
+          <section class="bg-white rounded-lg shadow p-6 mb-2 opacity-70">
             <h2 class="text-xl font-semibold mb-4">Services</h2>
 
             <p class="mb-2 font-semibold text-gray-600">
@@ -118,7 +119,7 @@
           </section>
 
           <!-- RATING CARD -->
-          <section class="bg-white rounded-lg shadow p-6 mb-6">
+          <section class="bg-white rounded-lg shadow p-6 mb-2 opacity-70">
             <h2 class="text-xl font-semibold mb-4">Performance</h2>
 
             <p>
@@ -130,17 +131,17 @@
           </section>
 
           <!-- ACTIONS -->
-          <section class="bg-white rounded-lg shadow p-6">
+          <section class="bg-white rounded-lg shadow p-6 opacity-70">
             <h2 class="text-xl font-semibold mb-4">Actions</h2>
 
             <div class="flex gap-4 flex-wrap">
               <a href="/pet_sitter/edit-profile/<%= user.user_id %>"
-                class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition">
+                class="bg-green-700 text-white px-5 py-2 rounded hover:bg-green-800 transition">
                 Edit Profile
               </a>
 
               <a href="/pet_sitter/bookings"
-                class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+                class="bg-blue-700 text-white px-5 py-2 rounded hover:bg-blue-800 transition">
                 View Bookings
               </a>
             </div>

@@ -148,7 +148,7 @@ router.post(
       services_offered,
       price_per_service
     } = req.body;
-
+   
     const profilePicture = req.file
       ? `/uploads/${req.file.filename}`
       : null;
