@@ -148,7 +148,7 @@ router.post(
       services_offered,
       price_per_service
     } = req.body;
-   
+
     const profilePicture = req.file
       ? `/uploads/${req.file.filename}`
       : null;
@@ -292,7 +292,7 @@ router.get('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
 });
 
 // Pet Sitter edit profile - POST method
-router.post('/pet_sitter/edit-profile/:userId',auth, (req, res) => {
+router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
   const userId = req.params.userId;
 
   const {
@@ -360,12 +360,11 @@ router.post('/pet_sitter/edit-profile/:userId',auth, (req, res) => {
   });
 });
 
-//Pet owner dashboard
+// Pet owner dashboard
 router.get('/pet-owner/dashboard', auth, (req, res) => {
-
   const userId = req.session.userId;
 
-  // Get user info
+  // 1. Get user info
   db.get(
     'SELECT * FROM users WHERE user_id = ?',
     [userId],
@@ -375,9 +374,9 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
         return res.status(500).send('Error loading user');
       }
 
-      // Get pets for this owner
+      // 2. Get pets for this owner
       db.all(
-        'SELECT * FROM pets WHERE owner_id = ? ORDER BY pet_name',
+        'SELECT * FROM pets WHERE owner_id = ?',
         [userId],
         (err, pets) => {
           if (err) {
@@ -385,16 +384,52 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
             return res.status(500).send('Error loading pets');
           }
 
-          res.render('pet_owner_dashboard', {
-            title: 'Pet Owner Dashboard',
-            user,
-            pets: pets || []
-          });
+          // 3. Get providers with user info
+          db.all(
+            `
+            SELECT
+              users.user_id,
+              users.first_name,
+              users.last_name,
+              users.email,
+              users.phone_number,
+              users.location,
+              users.profile_picture AS user_profile_picture,
+
+              providers.provider_id,
+              providers.bio,
+              providers.certifications,
+              providers.years_of_experience,
+              providers.services_offered,
+              providers.price_per_service,
+              providers.rating,
+              providers.profile_picture AS provider_profile_picture
+            FROM providers
+            INNER JOIN users
+              ON providers.user_id = users.user_id
+            `,
+            [],
+            (err, providers) => {
+              if (err) {
+                console.error(err);
+                return res.status(500).send('Error loading providers');
+              }
+
+              // 4. Render dashboard
+              res.render('pet_owner_dashboard', {
+                title: 'Pet Owner Dashboard',
+                user,
+                pets: pets || [],
+                providers: providers || []
+              });
+            }
+          );
         }
       );
     }
   );
 });
+
 
 
 
@@ -415,9 +450,9 @@ router.get('/pets/:id/edit', auth, (req, res) => {
 
 // Show Add Pet form
 router.get('/pets/add', auth, (req, res) => {
-  res.render('add_pets', { 
-    title: 'Add a Pet', 
-    user: { id: req.session.userId, name: req.session.userName } 
+  res.render('add_pets', {
+    title: 'Add a Pet',
+    user: { id: req.session.userId, name: req.session.userName }
   });
 });
 
@@ -472,7 +507,7 @@ router.put('/pets/:id', auth, (req, res) => {
     WHERE pet_id = ?
   `;
 
-  db.run(stmt, [pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records, petId], function(err) {
+  db.run(stmt, [pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records, petId], function (err) {
     if (err) {
       console.error('Error updating pet:', err);
       return res.status(500).send('Database error while updating pet');
@@ -484,15 +519,15 @@ router.put('/pets/:id', auth, (req, res) => {
 
 // Delete a pet from pets table
 router.post('/pets/:petId/delete', auth, (req, res) => {
-    const petId = req.params.petId;
-        db.run(`DELETE FROM pets WHERE pet_id = ?`, [petId], (err) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Error deleting pet');
-            }
+  const petId = req.params.petId;
+  db.run(`DELETE FROM pets WHERE pet_id = ?`, [petId], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error deleting pet');
+    }
 
-            res.redirect('/pet-owner/dashboard'); 
-        });
+    res.redirect('/pet-owner/dashboard');
+  });
 
 });
 

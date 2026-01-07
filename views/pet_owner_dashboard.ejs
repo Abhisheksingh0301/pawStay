@@ -11,8 +11,7 @@
     <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
-<body class="min-h-screen bg-cover bg-center bg-no-repeat" 
-      style="background-image: url('/images/rabbit.jpg');">
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/images/rabbit.jpg');">
     <%- include('header', { user }) %>
 
         <main class="max-w-6xl mx-auto p-6">
@@ -29,12 +28,9 @@
                 </button>
                 <button id="tab-bookings"
                     class="tab-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
-                    Bookings
+                    Find Pet Sitters
                 </button>
             </div>
-
-
-
 
             <!-- My Pets Content -->
             <div id="content-my-pets" class="tab-content">
@@ -72,7 +68,7 @@
                                     <div class="mt-4 flex justify-end">
                                         <a href="/pets/<%= pet.pet_id %>/edit" title="Edit Pet"
                                             class="px-3 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition">
-                                             <i class="fas fa-edit"></i>
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <!-- Delete Button -->
                                         <form action="/pets/<%= pet.pet_id %>/delete" method="POST"
@@ -92,7 +88,7 @@
             <!-- Add Pet Content -->
             <div id="content-add-pets" class="tab-content hidden ">
                 <h2 class="text-2xl font-semibold mb-4 text-white">Add Pet
-                    </h2>
+                </h2>
                 <section class="mt-2 bg-white p-6 rounded-lg shadow opacity-75">
                     <form action="/pets/add" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -173,11 +169,74 @@
                 </section>
             </div>
 
-            <!-- Bookings Content -->
+            <!-- Find Pet Sitters -->
             <div id="content-bookings" class="tab-content hidden">
-                <h2 class="text-2xl font-semibold mb-4 text-white">Bookings</h2>
-                <p class="text-gray-100">No bookings available yet.</p>
+                <h2 class="text-2xl font-semibold mb-4 text-white">Find Pet Sitters</h2>
+
+                <% if (providers.length===0) { %>
+                    <p class="text-gray-100 font-semibold">No pet sitters available</p>
+                    <% } else { %>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                            <% providers.forEach(provider=> { %>
+                                <div
+                                    class="relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                                    <!-- Background Image -->
+                                    <div class="absolute inset-0 bg-center bg-cover"
+                                        style="background-image: url('<%= provider.profile_picture %>');">
+                                    </div>
+
+                                    <!-- Overlay -->
+                                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+                                    <!-- Content -->
+                                    <div class="relative z-10 p-6 text-white">
+                                        <h3
+                                            class="text-xl font-bold text-amber-400 mb-2 border-b-2 border-amber-400 pb-1">
+                                            <%= provider.first_name %>
+                                                <%= provider.last_name %>
+                                        </h3>
+
+                                        <div class="space-y-1 text-sm">
+                                            <p><span class="font-semibold">Bio:</span>
+                                                <%= provider.bio %>
+                                            </p>
+                                            <p><span class="font-semibold">Certifications:</span>
+                                                <%= provider.certifications %>
+                                            </p>
+                                            <p><span class="font-semibold">Experience:</span>
+                                                <%= provider.years_of_experience %> years
+                                            </p>
+
+                                            <% if (provider.price_per_service) { %>
+                                                <p><span class="font-semibold">Price:</span>
+                                                    <%= provider.price_per_service %>
+                                                </p>
+                                                <% } %>
+
+                                                    <% if (provider.rating !==null) { %>
+                                                        <p><span class="font-semibold">Rating:</span>
+                                                            <%= provider.rating %> ⭐
+                                                        </p>
+                                                        <% } %>
+
+                                                            <p><span class="font-semibold">Phone:</span>
+                                                                <%= provider.phone_number %>
+                                                            </p>
+                                                            <p><span class="font-semibold">Email:</span>
+                                                                <%= provider.email %>
+                                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <% }) %>
+
+                        </div>
+                        <% } %>
             </div>
+
+
 
         </main>
 
