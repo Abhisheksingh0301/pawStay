@@ -176,63 +176,70 @@
                 <% if (providers.length===0) { %>
                     <p class="text-gray-100 font-semibold">No pet sitters available</p>
                     <% } else { %>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                             <% providers.forEach(provider=> { %>
                                 <div
-                                    class="overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 bg-black/50">
+                                    class="flex bg-black/50 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden">
 
                                     <!-- Profile Image -->
                                     <img src="<%= provider.provider_profile_picture || '/images/default-profile.png' %>"
-                                        alt="Profile Picture" class="w-full h-auto object-cover" />
-
-                                    <!-- Overlay -->
-                                    <!-- <div class="absolute inset-0 bg-gray-200"></div> -->
+                                        alt="Profile Picture" class="w-40 h-full object-cover" />
 
                                     <!-- Content -->
-                                    <div class="relative z-10 p-6 text-white">
-                                        <h3
-                                            class="text-xl font-bold text-amber-400 mb-2 border-b-2 border-amber-400 pb-1">
-                                            <%= provider.first_name %>
-                                                <%= provider.last_name %>
-                                        </h3>
+                                    <div class="flex flex-col justify-between flex-1 p-4 text-white">
 
-                                        <div class="space-y-1 text-sm">
-                                            <p><span class="font-semibold">Bio:</span>
-                                                <%= provider.bio %>
-                                            </p>
-                                            <p><span class="font-semibold">Certifications:</span>
-                                                <%= provider.certifications %>
-                                            </p>
-                                            <p><span class="font-semibold">Experience:</span>
-                                                <%= provider.years_of_experience %> years
-                                            </p>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-amber-400 border-b border-amber-400 mb-2">
+                                                <%= provider.first_name %>
+                                                    <%= provider.last_name %>
+                                            </h3>
 
-                                            <% if (provider.price_per_service) { %>
-                                                <p><span class="font-semibold">Price:</span>
-                                                    <%= provider.price_per_service %>
+                                            <div class="text-sm space-y-1">
+                                                <p><span class="font-semibold">Bio:</span>
+                                                    <%= provider.bio %>
                                                 </p>
-                                                <% } %>
+                                                <p><span class="font-semibold">Cert:</span>
+                                                    <%= provider.certifications %>
+                                                </p>
+                                                <p><span class="font-semibold">Experience:</span>
+                                                    <%= provider.years_of_experience %> years
+                                                </p>
 
-                                                    <% if (provider.rating !==null) { %>
-                                                        <p><span class="font-semibold">Rating:</span>
-                                                            <%= provider.rating %> ⭐
-                                                        </p>
-                                                        <% } %>
+                                                <% if (provider.price_per_service) { %>
+                                                    <p><span class="font-semibold">Price:</span>
+                                                        $<%= provider.price_per_service %>
+                                                    </p>
+                                                    <% } %>
 
-                                                            <p><span class="font-semibold">Phone:</span>
-                                                                <%= provider.phone_number %>
+                                                        <% if (provider.rating !==null) { %>
+                                                            <p><span class="font-semibold">Rating:</span>
+                                                                <%= provider.rating %> ⭐
                                                             </p>
-                                                            <p><span class="font-semibold">Email:</span>
-                                                                <%= provider.email %>
-                                                            </p>
+                                                            <% } %>
+                                                                <p><span class="font-semibold">Phone:</span>
+                                                                    <%= provider.phone_number %>
+                                                                </p>
+                                                                <p><span class="font-semibold">Email:</span>
+                                                                    <%= provider.email %>
+                                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
 
+                                        <!-- Button -->
+                                        <div class="mt-3 flex justify-end">
+                                            <a href="/pet-owner/bookings/<%= provider.provider_id %>"
+                                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
+                                                Booking
+                                            </a>
+                                        </div>
+
+                                    </div>
                                 </div>
                                 <% }) %>
 
                         </div>
+
                         <% } %>
             </div>
 

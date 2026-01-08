@@ -430,7 +430,53 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
   );
 });
 
+router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
+  const providerId = req.params.providerId;
+  const userId = req.session.userId;
+  db.all(
+    `
+  SELECT
+              users.user_id,
+              users.first_name,
+              users.last_name,
+              users.email,
+              users.phone_number,
+              users.location,
+              users.profile_picture AS user_profile_picture,
 
+              providers.provider_id,
+              providers.bio,
+              providers.certifications,
+              providers.years_of_experience,
+              providers.services_offered,
+              providers.price_per_service,
+              providers.rating,
+              providers.profile_picture AS provider_profile_picture
+            FROM providers
+            INNER JOIN users
+              ON providers.user_id = users.user_id
+              WHERE providers.provider_id = ? 
+  `,
+    [providerId],
+    (err, providers) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error loading providers');
+      }
+      console.log(providers,userId)
+      db.all(
+        `SELECT * FROM PETS WHERE owner_id = ?`,
+        [userId],
+        (err, pets) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send('Error loading pets');
+          }
+          console.log(providers,pets,req.session.user);
+          res.render('pet_owner_bookings', { title: 'My Bookings', user: req.session.user || null, providers, pets });
+        });
+    });
+});
 
 
 // GET: Show edit form for a pet
