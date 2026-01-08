@@ -72,6 +72,7 @@ router.post('/login', async (req, res) => {
         // Save session
         req.session.userId = user.user_id;
         req.session.userType = user.user_type;
+        req.session.userName = user.first_name;
 
         // PET OWNER
         if (user.user_type === 'pet_owner') {
@@ -482,7 +483,8 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
 // GET: Show edit form for a pet
 router.get('/pets/:id/edit', auth, (req, res) => {
   const petId = req.params.id;
-
+  const userId = req.session.userId;
+  const userName = req.session.userName;
   db.get('SELECT * FROM pets WHERE pet_id = ?', [petId], (err, pet) => {
     if (err) {
       console.error(err);
