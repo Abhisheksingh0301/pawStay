@@ -473,7 +473,7 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
             return res.status(500).send('Error loading pets');
           }
           console.log(providers,pets,req.session.user);
-          res.render('pet_owner_bookings', { title: 'My Bookings', user: req.session.user || null, providers, pets });
+          res.render('pet_bookings', { title: 'My Bookings', user: req.session.user || null, providers, pets });
         });
     });
 });
