@@ -50,59 +50,71 @@ router.post('/login', async (req, res) => {
   try {
     const { txtemail, txtpwd } = req.body;
 
-    db.get(
-      'SELECT * FROM users WHERE email = ?',
-      [txtemail],
-      async (err, user) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send('Internal server error');
-        }
-
-        if (!user) {
-          return res.render('msg', { title: 'This email-ID is not registered with us', user: req.session.user || null });
-        }
-
-        const match = await bcrypt.compare(txtpwd, user.password);
-
-        if (!match) {
-          return res.render('msg', { title: 'Invalid password', user: req.session.user || null });
-        }
-
-        // Save session
-        req.session.userId = user.user_id;
-        req.session.userType = user.user_type;
-        req.session.userName = user.first_name;
-
-        // PET OWNER
-        if (user.user_type === 'pet_owner') {
-          return res.redirect('/pet-owner/dashboard');
-        }
-
-        // PET SITTER
-        db.get(
-          'SELECT * FROM providers WHERE user_id = ?',
-          [user.user_id],
-          (err, provider) => {
-            if (err) {
-              console.error(err);
-              return res.status(500).send('Error loading provider');
-            }
-
-            res.render('pet_sitter_dashboard', {
-              title: 'Pet Sitter Dashboard',
-              user,
-              provider
-            });
-          }
-        );
+    // Get user by email
+    db.get('SELECT * FROM users WHERE email = ?', [txtemail], async (err, user) => {
+      if (err) {
+        console.error('DB error:', err);
+        return res.status(500).send('Internal server error');
       }
-    );
+
+      if (!user) {
+        return res.render('msg', { 
+          title: 'This email-ID is not registered with us', 
+          user: req.session.user || null 
+        });
+      }
+
+      // Check password
+      const match = await bcrypt.compare(txtpwd, user.password);
+      if (!match) {
+        return res.render('msg', { 
+          title: 'Invalid password', 
+          user: req.session.user || null 
+        });
+      }
+
+      // Save user info in session
+      req.session.user = {
+        id: user.user_id,
+        first_name: user.first_name,
+        user_type: user.user_type
+      };
+
+      console.log('LOGIN SESSION:', req.session.user);
+
+      // Redirect pet owner to dashboard
+      if (user.user_type === 'pet_owner') {
+        return res.redirect('/pet-owner/dashboard');
+      }
+
+      // Pet sitter: load provider info then render dashboard
+      if (user.user_type === 'provider') {
+        db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
+          if (err) {
+            console.error('Provider load error:', err);
+            return res.status(500).send('Error loading provider');
+          }
+
+          return res.render('pet_sitter_dashboard', {
+            title: 'Pet Sitter Dashboard',
+            user: req.session.user, // session user is sent here
+            provider
+          });
+        });
+        return;
+      }
+
+      // Unknown user type
+      return res.status(400).send('Unknown user type');
+    });
+
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     res.status(500).send('Internal server error');
   }
 });
+
+
 //Show profile page to create profile for pet sitter --get--
 router.get('/pet_sitter_create-profile/:userId', auth, (req, res) => {
   const userId = req.params.userId;
@@ -197,7 +209,7 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
 
   db.get(
     'SELECT * FROM users WHERE user_id = ?',
-    [req.session.userId],
+    [req.session.user.id],
     (err, user) => {
       if (err) {
         console.error(err);
@@ -211,7 +223,7 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
       // Load provider info
       db.get(
         'SELECT * FROM providers WHERE user_id = ?',
-        [user.user_id],
+        [req.session.user.id],
         (err, provider) => {
           if (err) {
             console.error(err);
@@ -364,7 +376,7 @@ router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
 // Pet owner dashboard
 router.get('/pet-owner/dashboard', auth, (req, res) => {
   const userId = req.session.userId;
-
+  
   // 1. Get user info
   db.get(
     'SELECT * FROM users WHERE user_id = ?',
@@ -419,7 +431,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
               // 4. Render dashboard
               res.render('pet_owner_dashboard', {
                 title: 'Pet Owner Dashboard',
-                user,
+                user: req.session.user,
                 pets: pets || [],
                 providers: providers || []
               });
@@ -464,7 +476,7 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
         console.error(err);
         return res.status(500).send('Error loading providers');
       }
-      console.log(providers,userId)
+      console.log(providers, userId)
       db.all(
         `SELECT * FROM PETS WHERE owner_id = ?`,
         [userId],
@@ -473,7 +485,7 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
             console.error(err);
             return res.status(500).send('Error loading pets');
           }
-          console.log(providers,pets,req.session.user);
+          console.log(providers, pets, req.session.user);
           res.render('pet_bookings', { title: 'My Bookings', user: req.session.user || null, providers, pets });
         });
     });

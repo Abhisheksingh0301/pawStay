@@ -24,10 +24,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session setup 
 app.use(session({
-  secret: 'singhisking', 
+  secret: 'singhisking',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false, // important
+  cookie: {
+    secure: false, // true only on HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
+
+//Send session data to views
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  console.log('Session User:', res.locals.user);
+  next();
+});
+
 
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
@@ -37,12 +50,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

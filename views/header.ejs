@@ -3,47 +3,40 @@
 
     <!-- LEFT: LOGO / PROFILE IMAGE -->
     <div class="flex items-center gap-3">
-      <img
-        src="<%= '/images/pawstay-logo.png' %>"
-        alt="Profile"
-        class="w-10 h-10 rounded-full object-cover border-2 border-white"
-      />
+      <img src="<%= '/images/pawstay-logo.png' %>" alt="Profile"
+        class="w-10 h-10 rounded-full object-cover border-2 border-white" />
 
       <span class="text-white font-serif font-semibold tracking-wide text-2xl">
-        PawStay
+        PawStay 
       </span>
     </div>
+   
 
     <!-- RIGHT: USER NAME + LOGOUT -->
-<div class="flex items-center gap-4">
-  <% if (!user) { %>
-    <a
-      href="/login"
-      class="text-white text-sm sm:text-base font-bold hover:underline"
-    >
-      Login
-    </a>
-    <a
-      href="/users/signup"
-      class="text-white text-sm sm:text-base font-bold hover:underline"
-    >
-      Sign Up
-    </a>
-  <% } else { %>
-    <span class="text-white text-sm sm:text-base">
-      Welcome, <span class="font-semibold"><%= user.first_name %></span>
-    </span>
+    <div class="flex items-center gap-4">
+      <% if (!user) { %>
+        <a href="/login" class="text-white text-sm sm:text-base font-bold hover:underline">
+          Login
+        </a>
+        <a href="/users/signup" class="text-white text-sm sm:text-base font-bold hover:underline">
+          Sign Up
+        </a>
+        <% } else { %>
 
-    <form action="/users/logout" method="POST">
-      <button
-        type="submit"
-        class="bg-white text-green-600 px-4 py-1.5 rounded-md text-sm font-medium hover:cursor-pointer
+          <span class="text-white text-sm sm:text-base">
+            Welcome, <span class="font-semibold">
+              <%= user.first_name %>
+            </span>
+          </span>
+
+          <form action="/users/logout" method="POST">
+            <button type="submit" class="bg-white text-green-600 px-4 py-1.5 rounded-md text-sm font-medium hover:cursor-pointer
                hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white transition">
-        Logout
-      </button>
-    </form>
-  <% } %>
-</div>
+              Logout
+            </button>
+          </form>
+          <% } %>
+    </div>
 
 
   </div>
