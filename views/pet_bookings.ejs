@@ -3,15 +3,131 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Pet Sitter Dashboard</title>
+    <title>Book Pet Sitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/tailwind/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
 <body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/images/rabbit.jpg');">
-    <%- include('header', { user }) %>
+
+    <%- include('header') %>
+        <div class="max-w-4xl mx-auto px-4 py-10">
+            <div class="bg-black/60 backdrop-blur-lg rounded-xl shadow-xl text-white overflow-hidden">
+
+                <!-- Provider Header -->
+                <div class="flex flex-col md:flex-row items-center gap-6 p-6 border-b border-amber-400/30">
+                    <img src="<%= providers.provider_profile_picture || '/images/default-avatar.png' %>" alt="Provider"
+                        class="w-28 h-28 rounded-full object-cover border-4 border-amber-400" />
+
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold text-amber-400">
+                            <%= providers.first_name %>
+                                <%= providers.last_name %>
+                        </h2>
+
+                        <p class="text-sm text-gray-300 mt-1">
+                            <i class="fa-solid fa-location-dot mr-1 text-amber-400"></i>
+                            <%= providers.location %>
+                        </p>
+
+                        <% if (providers.rating !==null) { %>
+                            <p class="mt-2 text-sm">
+                                ⭐ <span class="font-semibold">
+                                    <%= providers.rating %>
+                                </span> / 5
+                            </p>
+                            <% } %>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    <!-- Provider Info -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-amber-400 mb-3">
+                            Provider Details
+                        </h3>
+
+                        <div class="space-y-3 text-sm">
+                            <p>
+                                <span class="font-semibold text-gray-300">Bio:</span><br>
+                                <%= providers.bio %>
+                            </p>
+
+                            <p>
+                                <span class="font-semibold text-gray-300">Certifications:</span><br>
+                                <%= providers.certifications %>
+                            </p>
+
+                            <p>
+                                <span class="font-semibold text-gray-300">Experience:</span>
+                                <%= providers.years_of_experience %> years
+                            </p>
+
+                            <% if (providers.price_per_service) { %>
+                                <p>
+                                    <span class="font-semibold text-gray-300">Price:</span>
+                                    $<%= providers.price_per_service %> / service
+                                </p>
+                                <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <form action="/pet-owner/bookings/<%= providers.provider_id %>" method="POST">
+                        <h3 class="text-lg font-semibold text-amber-400 mb-3">
+                            Booking Details
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">
+                                    Start Date & Time
+                                </label>
+                                <input type="datetime-local" name="start_datetime" required
+                                    class="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:border-amber-400" />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">
+                                    End Date & Time
+                                </label>
+                                <input type="datetime-local" name="end_datetime" required
+                                    class="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:border-amber-400" />
+                            </div>
+                            <!-- Select Pet -->
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">
+                                    Select Pet
+                                </label>
+                                <select name="pet_id" required
+                                    class="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:border-amber-400">
+                                    <option value="" disabled selected>
+                                        -- Choose your pet --
+                                    </option>
+
+                                    <% pets.forEach(pet=> { %>
+                                        <option value="<%= pet.pet_id %>">
+                                            <%= pet.pet_name %>
+                                        </option>
+                                        <% }) %>
+                                </select>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition duration-200">
+                                Confirm Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
 </body>
+
 </html>

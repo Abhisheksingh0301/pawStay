@@ -375,7 +375,7 @@ router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
 
 // Pet owner dashboard
 router.get('/pet-owner/dashboard', auth, (req, res) => {
-  const userId = req.session.userId;
+  const userId = req.session.user.id;
   
   // 1. Get user info
   db.get(
@@ -396,7 +396,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
             console.error(err);
             return res.status(500).send('Error loading pets');
           }
-
+          console.log('Pets:', pets);
           // 3. Get providers with user info
           db.all(
             `
@@ -443,10 +443,12 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
   );
 });
 
+
+// Pet booking page by the pet owner
 router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
   const providerId = req.params.providerId;
-  const userId = req.session.userId;
-  db.all(
+  const userId = req.session.user.id;
+  db.get(
     `
   SELECT
               users.user_id,
@@ -476,16 +478,15 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
         console.error(err);
         return res.status(500).send('Error loading providers');
       }
-      console.log(providers, userId)
       db.all(
-        `SELECT * FROM PETS WHERE owner_id = ?`,
+        `SELECT * FROM PETS WHERE owner_id = ? ORDER BY pet_name`,
         [userId],
         (err, pets) => {
           if (err) {
             console.error(err);
             return res.status(500).send('Error loading pets');
           }
-          console.log(providers, pets, req.session.user);
+          // console.log("Providers",providers);
           res.render('pet_bookings', { title: 'My Bookings', user: req.session.user || null, providers, pets });
         });
     });
@@ -495,8 +496,8 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
 // GET: Show edit form for a pet
 router.get('/pets/:id/edit', auth, (req, res) => {
   const petId = req.params.id;
-  const userId = req.session.userId;
-  const userName = req.session.userName;
+  const userId = req.session.user.id;
+  const userName = req.session.user.name;
   db.get('SELECT * FROM pets WHERE pet_id = ?', [petId], (err, pet) => {
     if (err) {
       console.error(err);
@@ -512,7 +513,8 @@ router.get('/pets/:id/edit', auth, (req, res) => {
 router.get('/pets/add', auth, (req, res) => {
   res.render('add_pets', {
     title: 'Add a Pet',
-    user: { id: req.session.userId, name: req.session.userName }
+    //user: { id: req.session.user.id, name: req.session.user.name }
+    user:req.session.user
   });
 });
 
@@ -535,7 +537,7 @@ router.post('/pets/add', auth, (req, res) => {
       owner_id, pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      req.session.userId,
+      req.session.user.id,
       pet_name,
       pet_type,
       breed,
