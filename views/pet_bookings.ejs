@@ -77,17 +77,18 @@
                     </div>
 
                     <!-- Booking Form -->
-                    <form action="/pet-owner/bookings/<%= providers.provider_id %>" method="POST">
+                    <form action="/pet-owner/bookings" method="POST">
                         <h3 class="text-lg font-semibold text-amber-400 mb-3">
                             Booking Details
                         </h3>
-
+                        <input type="hidden" name="provider_id" value="<%= providers.provider_id %>" />
+                        <input type="hidden" name="price_per_service" value="<%= providers.price_per_service %>" />
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold mb-1">
                                     Start Date & Time
                                 </label>
-                                <input type="datetime-local" name="start_datetime" required
+                                <input type="datetime-local" name="start_time" required
                                     class="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:border-amber-400" />
                             </div>
 
@@ -95,7 +96,7 @@
                                 <label class="block text-sm font-semibold mb-1">
                                     End Date & Time
                                 </label>
-                                <input type="datetime-local" name="end_datetime" required
+                                <input type="datetime-local" name="end_time" required
                                     class="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:outline-none focus:border-amber-400" />
                             </div>
                             <!-- Select Pet -->
@@ -118,7 +119,7 @@
                             </div>
 
                             <button type="submit"
-                                class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition duration-200">
+                                class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition duration-200 cursor-pointer">
                                 Confirm Booking
                             </button>
                         </div>

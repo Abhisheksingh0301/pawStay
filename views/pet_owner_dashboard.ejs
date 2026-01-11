@@ -30,6 +30,10 @@
                     class="tab-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
                     Find Pet Sitters
                 </button>
+                <button id="tab-mybookings"
+                    class="tab-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:shadow-lg transition hover:-translate-y-1 font-semibold">
+                    My Bookings
+                </button>
             </div>
 
             <!-- My Pets Content -->
@@ -221,7 +225,7 @@
                                                                     *********************
                                                                 </p>
                                                                 <p><span class="font-semibold">Email:</span>
-                                                                   ###################
+                                                                    ###################
                                                                 </p>
                                             </div>
                                         </div>
@@ -242,6 +246,97 @@
 
                         <% } %>
             </div>
+            <!-- My pets bookings -->
+            <div id="content-view-bookings" class="tab-content hidden">
+                <h2 class="text-2xl font-semibold mb-4 text-white">My Bookings</h2>
+
+                <% if (bookings.length===0) { %>
+                    <p class="text-gray-100 font-semibold">You have no bookings yet.</p>
+                    <% } else { %>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                            <% bookings.forEach(booking=> { %>
+                                <div
+                                    class="flex bg-black/50 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden">
+
+                                    <!-- Provider / Pet Image -->
+                                    <img src="<%= booking.provider_profile_picture  %>" alt="Provider Image"
+                                        class="w-40 h-full object-cover" />
+
+                                    <!-- Content -->
+                                    <div class="flex flex-col justify-between flex-1 p-4 text-white">
+
+                                        <div>
+                                            <h3 class="text-lg font-bold text-amber-400 border-b border-amber-400 mb-2">
+                                                <%= booking.provider_first_name %>
+                                                    <%= booking.provider_last_name %>
+                                            </h3>
+
+                                            <div class="text-sm space-y-1">
+                                                <p>
+                                                    <span class="font-semibold">Pet:</span>
+                                                    <%= booking.pet_name %>
+                                                </p>
+
+                                                <p>
+                                                    <span class="font-semibold">From:</span>
+                                                    <%= booking.start_time %>
+                                                </p>
+
+                                                <p>
+                                                    <span class="font-semibold">To:</span>
+                                                    <%= booking.end_time %>
+                                                </p>
+
+                                                <p>
+                                                    <span class="font-semibold">Price:</span>
+                                                    $&nbsp;<%= booking.price %>
+                                                </p>
+
+                                                <p>
+                                                    <span class="font-semibold">Status:</span>
+                                                    <span class="
+                                        <%= booking.status === 'pending' ? 'text-yellow-400' :
+                                            booking.status === 'approved' ? 'text-green-400' :
+                                            'text-red-400' %>
+                                    ">
+                                                        <%= booking.status %>
+                                                    </span>
+                                                </p>
+
+                                                <p>
+                                                    <span class="font-semibold">Payment:</span>
+                                                    <%= booking.payment_status %>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Buttons -->
+                                        <div class="mt-3 flex justify-end space-x-2">
+
+                                            <% if (booking.status==='pending' ) { %>
+                                                <a href="/pet-owner/bookings/<%= booking.booking_id %>/cancel"
+                                                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
+                                                    Cancel
+                                                </a>
+                                                <% } %>
+
+                                                    <a href="/pet-owner/bookings/<%= booking.booking_id %>"
+                                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
+                                                        View
+                                                    </a>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <% }) %>
+
+                        </div>
+                        <% } %>
+            </div>
+
 
 
 

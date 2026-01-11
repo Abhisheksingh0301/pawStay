@@ -37,7 +37,7 @@ app.use(session({
 //Send session data to views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
-  console.log('Session User:', res.locals.user);
+  // console.log('Session User:', res.locals.user);
   next();
 });
 
