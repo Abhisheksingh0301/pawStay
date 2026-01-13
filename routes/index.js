@@ -82,16 +82,20 @@ router.post('/login', async (req, res) => {
         db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
           if (err) return res.status(500).send('Error loading provider');
 
-          db.all(
-            `SELECT * from bookings b
-              INNER join users u
-              on  u.user_id = b.provider_id
-              where b.provider_id=?`,
+          db.all(`
+            SELECT * from bookings b
+              INNER join providers p
+              on  b.provider_id = p.provider_id
+			        INNER join users u 
+			        on p.user_id = u.user_id
+              INNER join pets t on b.pet_id=t.pet_id
+			        where p.user_id=?
+            `,
             [user.user_id],
             (err, bookings) => {
               if (err) return res.status(500).send('Error loading bookings');
               console.log("Bookings:", bookings);
-              console.log(req.session.user.id);
+              //console.log(req.session.user.id);
               return res.render('pet_sitter_dashboard', {
                 title: 'Pet Sitter Dashboard',
                 user: req.session.user,
@@ -663,20 +667,5 @@ router.post('/pet-owner/bookings', auth, (req, res) => {
 })
 
 
-//Pet owner bookings page get method
-router.get('/pet-owner/bookings', auth, (req, res) => {
-  const userId = req.session.user.id;
-  db.run(`
-    SELECT * from bookings b
-    INNER join users u
-    on  u.user_id = b.provider_id
-    where b.provider_id=?
-    `, [userId], (err, bookings) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send('Error loading bookings');
-    }
-    res.render('pet_owner_bookings', { title: 'My Bookings', bookings, moment: moment });
-  })
-})
+
 module.exports = router;

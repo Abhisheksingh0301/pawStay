@@ -7,6 +7,7 @@
     <%= title %>
   </title>
   <link href="/tailwind/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
@@ -132,20 +133,61 @@
                 <% } else { %>
                   <ul class="divide-y">
                     <% bookings.forEach(b=> { %>
-                      <li class="py-4">
+                      <div class="py-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                         <p><strong>Pet Owner:</strong>
-                          <%= b.owner_name %>
+                          <%= b.first_name %> &nbsp;<%= b.last_name %>
                         </p>
-                        <p><strong>Date:</strong>
-                          <%= b.booking_date %>
+                        <p>
+                          <strong>Pet name:</strong>
+                          <%= b.pet_name %>
                         </p>
-                        <p><strong>Status:</strong>
-                          <%= b.status %>
+                        <p>
+                          <strong>Pet type/Age:</strong>
+                          <%= b.pet_type.charAt(0).toUpperCase() + b.pet_type.slice(1) %>&nbsp;/&nbsp;<%= b.age %>
                         </p>
-                      </li>
+                        <p>
+                          <strong>Breed:</strong>
+                          <%= b.breed %>
+                        </p>
+                        
+                        <p>
+                          <strong>Allergy:</strong>
+                          <%= b.allergies %>
+                        </p>
+                        <p>
+                          <strong>Behavior:</strong>
+                          <%= b.behavior_notes %>
+                        </p>
+                        <p>
+                          <strong>Medical condition (if any):</strong>
+                          <%= b.medical_records %>
+                        </p>
+                        <p class="col-span-2"><strong>From:</strong>
+                          <%= moment(b.start_time).format('DD-MMM-YY hh:mm A') %> to 
+                            <%= moment(b.end_time).format('DD-MMM-YY hh:mm A') %>
+                        </p>
+                        <p>
+                          <strong>Status:</strong>
+                          <span class="ml-2 px-3 py-1 rounded-full text-sm font-medium
+                                  <%= 
+                                    b.status === 'pending'   ? 'bg-yellow-500 text-yellow-900' :
+                                    b.status === 'confirmed' ? 'bg-blue-500 text-white' :
+                                    b.status === 'completed' ? 'bg-green-500 text-white' :
+                                    b.status === 'canceled'  ? 'bg-red-500 text-white' :
+                                                              'bg-gray-400 text-white'
+                                  %>">
+                            <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
+                          </span>
+                        </p>
+
+                      </div>
                       <% }) %>
                   </ul>
                   <% } %>
+                  <div class="md:col-span-2 text-right space-x-2">
+                            <a href="/pet-owner/approve-booking/<%= b.booking_id %>"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded font-semibold"><i class="fa-solid fa-check"></i>&nbsp;Confirm</a>
+                        </div>
             </section>
           </div>
 
