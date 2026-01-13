@@ -269,24 +269,24 @@
 
                                         <div>
                                             <h3 class="text-lg font-bold text-amber-400 border-b border-amber-400 mb-2">
-                                                <%= booking.provider_first_name %>
-                                                    <%= booking.provider_last_name %>
+                                                <%= booking.provider_first_name %>&nbsp;<%= booking.provider_last_name
+                                                        %>
                                             </h3>
 
                                             <div class="text-sm space-y-1">
                                                 <p>
-                                                    <span class="font-semibold">Pet:</span>
+                                                    <span class="font-semibold">Booking for :</span>
                                                     <%= booking.pet_name %>
                                                 </p>
 
                                                 <p>
                                                     <span class="font-semibold">From:</span>
-                                                    <%= booking.start_time %>
+                                                    <%= moment(booking.start_time).format('DD-MMM-YYYY hh:mm A') %>
                                                 </p>
 
                                                 <p>
-                                                    <span class="font-semibold">To:</span>
-                                                    <%= booking.end_time %>
+                                                    <span class="font-semibold">Till:</span>
+                                                    <%= moment(booking._time).format('DD-MMM-YYYY hh:mm A') %>
                                                 </p>
 
                                                 <p>
@@ -301,32 +301,12 @@
                                             booking.status === 'approved' ? 'text-green-400' :
                                             'text-red-400' %>
                                     ">
-                                                        <%= booking.status %>
+                                                        <%= booking.status.charAt(0).toUpperCase() +
+                                                            booking.status.slice(1) %>
+
                                                     </span>
                                                 </p>
-
-                                                <p>
-                                                    <span class="font-semibold">Payment:</span>
-                                                    <%= booking.payment_status %>
-                                                </p>
                                             </div>
-                                        </div>
-
-                                        <!-- Buttons -->
-                                        <div class="mt-3 flex justify-end space-x-2">
-
-                                            <% if (booking.status==='pending' ) { %>
-                                                <a href="/pet-owner/bookings/<%= booking.booking_id %>/cancel"
-                                                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
-                                                    Cancel
-                                                </a>
-                                                <% } %>
-
-                                                    <a href="/pet-owner/bookings/<%= booking.booking_id %>"
-                                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
-                                                        View
-                                                    </a>
-
                                         </div>
 
                                     </div>

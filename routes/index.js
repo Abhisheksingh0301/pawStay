@@ -3,6 +3,7 @@ var router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require("../db/database");
 const auth = require('./middleware/auth');
+const moment = require('moment');
 
 const multer = require('multer');
 const path = require('path');
@@ -49,28 +50,19 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { txtemail, txtpwd } = req.body;
-
+    
     // Get user by email
     db.get('SELECT * FROM users WHERE email = ?', [txtemail], async (err, user) => {
-      if (err) {
-        console.error('DB error:', err);
-        return res.status(500).send('Internal server error');
-      }
+      if (err) return res.status(500).send('Internal server error');
 
       if (!user) {
-        return res.render('msg', {
-          title: 'This email-ID is not registered with us',
-          user: req.session.user || null
-        });
+        return res.render('msg', { title: 'This email-ID is not registered with us', user: req.session.user || null });
       }
 
       // Check password
       const match = await bcrypt.compare(txtpwd, user.password);
       if (!match) {
-        return res.render('msg', {
-          title: 'Invalid password',
-          user: req.session.user || null
-        });
+        return res.render('msg', { title: 'Invalid password', user: req.session.user || null });
       }
 
       // Save user info in session
@@ -80,39 +72,47 @@ router.post('/login', async (req, res) => {
         user_type: user.user_type
       };
 
-      console.log('LOGIN SESSION:', req.session.user);
-
-      // Redirect pet owner to dashboard
+      // Pet owner
       if (user.user_type === 'pet_owner') {
         return res.redirect('/pet-owner/dashboard');
       }
 
-      // Pet sitter: load provider info then render dashboard
+      // Pet sitter
       if (user.user_type === 'provider') {
         db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
-          if (err) {
-            console.error('Provider load error:', err);
-            return res.status(500).send('Error loading provider');
-          }
+          if (err) return res.status(500).send('Error loading provider');
 
-          return res.render('pet_sitter_dashboard', {
-            title: 'Pet Sitter Dashboard',
-            user: req.session.user, // session user is sent here
-            provider
-          });
+          db.all(
+            `SELECT * from bookings b
+              INNER join users u
+              on  u.user_id = b.provider_id
+              where b.provider_id=?`,
+            [user.user_id],
+            (err, bookings) => {
+              if (err) return res.status(500).send('Error loading bookings');
+              console.log("Bookings:", bookings);
+              console.log(req.session.user.id);
+              return res.render('pet_sitter_dashboard', {
+                title: 'Pet Sitter Dashboard',
+                user: req.session.user,
+                provider,
+                bookings, moment:moment
+              });
+            }
+          );
         });
-        return;
+        return; // <-- this closes the provider branch
       }
 
       // Unknown user type
       return res.status(400).send('Unknown user type');
     });
-
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).send('Internal server error');
   }
 });
+
 
 
 //Show profile page to create profile for pet sitter --get--
@@ -135,11 +135,12 @@ router.get('/pet_sitter_create-profile/:userId', auth, (req, res) => {
             // Profile already exists → go to dashboard
             return res.redirect('/pet_sitter_dashboard');
           }
-
           res.render('pet_sitter_create-profile', {
             title: 'Create Profile',
             user
-          });
+
+            });
+         
         }
       );
     }
@@ -205,6 +206,8 @@ router.post(
   }
 );
 
+
+// Pet Sitter dashboard
 router.get('/pet_sitter_dashboard', auth, (req, res) => {
 
   db.get(
@@ -230,16 +233,35 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
             return res.status(500).send('Error loading provider');
           }
 
-          res.render('pet_sitter_dashboard', {
-            title: 'Pet Sitter Dashboard',
-            user,
-            provider
-          });
-        }
-      );
-    }
-  );
+          db.all(
+            `SELECT *
+             FROM bookings b
+             INNER JOIN users u ON u.user_id = b.provider_id
+             WHERE b.provider_id = ?`,
+            [req.session.user.id],
+            (err, bookings) => {
+              if (err) {
+                console.error(err);
+                return res.status(500).send('Error loading bookings');
+              }
+
+              console.log("Bookings:", bookings);
+
+              res.render('pet_sitter_dashboard', {
+                title: 'Pet Sitter Dashboard',
+                user,
+                provider,
+                bookings,
+                moment
+              });
+            }
+          );
+        }   
+      );    
+    }       
+  );        
 });
+
 
 
 //Pet Sitter edit profile -get method
@@ -445,25 +467,27 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
             INNER JOIN providers r ON r.provider_id = b.provider_id
             INNER JOIN users u ON u.user_id = r.user_id
             WHERE p.owner_id = ?
-                `,req.session.user.id, (err,bookings)=>{
-                  if(err){
-                    console.error(err);
-                  }
-                   console.log("Bookings:",bookings);
-              // 4. Render dashboard
-              res.render('pet_owner_dashboard', {
-                title: 'Pet Owner Dashboard',
-                user: req.session.user,
-                pets: pets || [],
-                providers: providers || [],
-                bookings:bookings||[],
-                firstnm:providers.first_name,
-                lastnm:providers.last_name
-              });
+                `, req.session.user.id, (err, bookings) => {
+                if (err) {
+                  console.error(err);
+                }
+                console.log("Bookings:", bookings);
+                // 4. Render dashboard
+                res.render('pet_owner_dashboard', {
+                  title: 'Pet Owner Dashboard',
+                  user: req.session.user,
+                  pets: pets || [],
+                  providers: providers || [],
+                  bookings: bookings || [],
+                  moment: moment,
+                  firstnm: providers.first_name,
+                  lastnm: providers.last_name
+                });
+              }
+              );
             }
-          );
+          )
         }
-      )}
       );
     }
   );
@@ -638,4 +662,21 @@ router.post('/pet-owner/bookings', auth, (req, res) => {
     })
 })
 
+
+//Pet owner bookings page get method
+router.get('/pet-owner/bookings', auth, (req, res) => {
+  const userId = req.session.user.id;
+  db.run(`
+    SELECT * from bookings b
+    INNER join users u
+    on  u.user_id = b.provider_id
+    where b.provider_id=?
+    `, [userId], (err, bookings) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error loading bookings');
+    }
+    res.render('pet_owner_bookings', { title: 'My Bookings', bookings, moment: moment });
+  })
+})
 module.exports = router;
