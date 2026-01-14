@@ -149,7 +149,7 @@
                           <strong>Breed:</strong>
                           <%= b.breed %>
                         </p>
-                        
+
                         <p>
                           <strong>Allergy:</strong>
                           <%= b.allergies %>
@@ -163,7 +163,7 @@
                           <%= b.medical_records %>
                         </p>
                         <p class="col-span-2"><strong>From:</strong>
-                          <%= moment(b.start_time).format('DD-MMM-YY hh:mm A') %> to 
+                          <%= moment(b.start_time).format('DD-MMM-YY hh:mm A') %> to
                             <%= moment(b.end_time).format('DD-MMM-YY hh:mm A') %>
                         </p>
                         <p>
@@ -181,13 +181,17 @@
                         </p>
 
                       </div>
+
+                      <div class="md:col-span-2 text-right space-x-2 -mt-2">
+                        <a href="/pet-owner/approve-booking/<%= b.booking_id %>"
+                          onclick="return confirm('Are you sure you want to approve this booking?');"
+                          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
+                          <i class="fa-solid fa-check"></i>&nbsp;Confirm
+                        </a>
+                      </div>
                       <% }) %>
                   </ul>
                   <% } %>
-                  <div class="md:col-span-2 text-right space-x-2">
-                            <a href="/pet-owner/approve-booking/<%= b.booking_id %>"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded font-semibold"><i class="fa-solid fa-check"></i>&nbsp;Confirm</a>
-                        </div>
             </section>
           </div>
 
