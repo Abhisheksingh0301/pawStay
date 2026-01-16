@@ -50,7 +50,7 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { txtemail, txtpwd } = req.body;
-    
+
     // Get user by email
     db.get('SELECT * FROM users WHERE email = ?', [txtemail], async (err, user) => {
       if (err) return res.status(500).send('Internal server error');
@@ -84,12 +84,10 @@ router.post('/login', async (req, res) => {
 
           db.all(`
             SELECT * from bookings b
-              INNER join providers p
-              on  b.provider_id = p.provider_id
-			        INNER join users u 
-			        on p.user_id = u.user_id
-              INNER join pets t on b.pet_id=t.pet_id
-			        where p.user_id=?
+              INNER JOIN pets t ON b.pet_id = t.pet_id
+              INNER JOIN users owner ON t.owner_id = owner.user_id  
+              INNER JOIN providers p ON b.provider_id = p.provider_id
+			        WHERE p.user_id=?
             `,
             [user.user_id],
             (err, bookings) => {
@@ -100,12 +98,12 @@ router.post('/login', async (req, res) => {
                 title: 'Pet Sitter Dashboard',
                 user: req.session.user,
                 provider,
-                bookings, moment:moment
+                bookings, moment: moment
               });
             }
           );
         });
-        return; // <-- this closes the provider branch
+        return; 
       }
 
       // Unknown user type
@@ -143,8 +141,8 @@ router.get('/pet_sitter_create-profile/:userId', auth, (req, res) => {
             title: 'Create Profile',
             user
 
-            });
-         
+          });
+
         }
       );
     }
@@ -238,10 +236,11 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
           }
 
           db.all(
-            `SELECT *
-             FROM bookings b
-             INNER JOIN users u ON u.user_id = b.provider_id
-             WHERE b.provider_id = ?`,
+            ` SELECT * from bookings b
+               INNER JOIN pets t ON b.pet_id = t.pet_id
+               INNER JOIN users owner ON t.owner_id = owner.user_id   
+              INNER JOIN providers p ON b.provider_id = p.provider_id
+			        WHERE p.user_id=?`,
             [req.session.user.id],
             (err, bookings) => {
               if (err) {
@@ -260,10 +259,10 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
               });
             }
           );
-        }   
-      );    
-    }       
-  );        
+        }
+      );
+    }
+  );
 });
 
 
@@ -666,6 +665,30 @@ router.post('/pet-owner/bookings', auth, (req, res) => {
     })
 })
 
+//pet owner cancel booking post method
+router.post('/pet-sitter/cancel-booking/:booking_id', (req, res) => {
+  const bookingId = req.params.booking_id;
+
+  db.run(`UPDATE bookings SET status = 'canceled' WHERE booking_id = ?`, [bookingId], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error canceling booking');
+    }
+    res.redirect('/pet_sitter_dashboard');
+  });
+})
+//pet owner approve booking post method
+router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
+  const bookingId = req.params.booking_id;
+
+  db.run(`UPDATE bookings SET status = 'confirmed' WHERE booking_id = ?`, [bookingId], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error approving booking');
+    }
+    res.redirect('/pet_sitter_dashboard');
+  });
+})
 
 
 module.exports = router;

@@ -2,18 +2,20 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
     <%= title %>
   </title>
-  <link href="/tailwind/output.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
+  <link href="/tailwind/output.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png" />
 </head>
 
 <body class="min-h-screen bg-cover bg-center bg-no-repeat"
   style="background-image: url('/images/pet-sitter-dashboard.jpg');">
   <%- include('header', { user }) %>
+
     <!-- HEADER -->
     <header class="bg-blue-600 text-white p-6">
       <div class="max-w-6xl mx-auto">
@@ -30,8 +32,8 @@
 
     <!-- MAIN -->
     <main class="max-w-6xl mx-auto p-6">
-
       <% if (!provider) { %>
+
         <!-- PROFILE NOT COMPLETE -->
         <div class="bg-white rounded-lg shadow p-8 text-center">
           <h2 class="text-xl font-semibold text-red-600 mb-4">
@@ -57,16 +59,15 @@
               <button id="tab-profile" class="tab-btn px-6 py-3 font-semibold border-b-4 border-blue-600 text-blue-600">
                 My Profile
               </button>
+
               <button id="tab-bookings" class="tab-btn px-6 py-3 font-semibold text-gray-600 hover:text-blue-600">
                 Bookings
               </button>
             </div>
           </div>
 
-          <!-- TAB CONTENT -->
-          <!-- ================= MY PROFILE ================= -->
+          <!-- ================= PROFILE SECTION ================= -->
           <div id="profile-section">
-
             <!-- PROFILE CARD -->
             <section class="bg-white rounded-lg shadow p-6 mb-4 opacity-70">
               <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
@@ -106,7 +107,9 @@
               </p>
               <p class="mt-4">
                 <span class="font-semibold text-gray-600">Price:</span>
-                <span class="text-green-600 font-bold">$ <%= provider.price_per_service || 0 %></span>
+                <span class="text-green-600 font-bold">
+                  $ <%= provider.price_per_service || 0 %>
+                </span>
               </p>
             </section>
 
@@ -120,77 +123,85 @@
                 </span>
               </p>
             </section>
-
           </div>
 
-          <!-- ================= BOOKINGS ================= -->
+          <!-- ================= BOOKINGS SECTION ================= -->
           <div id="bookings-section" class="hidden">
             <section class="bg-white rounded-lg shadow p-6 opacity-70">
-              <h2 class="text-xl font-semibold mb-4">Bookings</h2>
+              <h2 class="text-xl font-semibold mb-4 text-orange-700 underline">Bookings</h2>
 
               <% if (!bookings || bookings.length===0) { %>
                 <p class="text-gray-600">No bookings yet.</p>
                 <% } else { %>
+
                   <ul class="divide-y">
                     <% bookings.forEach(b=> { %>
+
                       <div class="py-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                         <p><strong>Pet Owner:</strong>
-                          <%= b.first_name %> &nbsp;<%= b.last_name %>
+                          <%= b.first_name %>
+                            <%= b.last_name %>
                         </p>
-                        <p>
-                          <strong>Pet name:</strong>
+                        <p><strong>Pet Name:</strong>
                           <%= b.pet_name %>
                         </p>
-                        <p>
-                          <strong>Pet type/Age:</strong>
-                          <%= b.pet_type.charAt(0).toUpperCase() + b.pet_type.slice(1) %>&nbsp;/&nbsp;<%= b.age %>
+                        <p><strong>Pet Type / Age:</strong>
+                          <%= b.pet_type.charAt(0).toUpperCase() + b.pet_type.slice(1) %> / <%= b.age %>
                         </p>
-                        <p>
-                          <strong>Breed:</strong>
+                        <p><strong>Breed:</strong>
                           <%= b.breed %>
                         </p>
-
-                        <p>
-                          <strong>Allergy:</strong>
+                        <p><strong>Allergy:</strong>
                           <%= b.allergies %>
                         </p>
-                        <p>
-                          <strong>Behavior:</strong>
+                        <p><strong>Behavior:</strong>
                           <%= b.behavior_notes %>
                         </p>
-                        <p>
-                          <strong>Medical condition (if any):</strong>
+                        <p><strong>Medical Condition:</strong>
                           <%= b.medical_records %>
                         </p>
-                        <p class="col-span-2"><strong>From:</strong>
-                          <%= moment(b.start_time).format('DD-MMM-YY hh:mm A') %> to
+
+                        <p class="col-span-1 sm:col-span-2 md:col-span-2">
+                          <strong>From:</strong>
+                          <%= moment(b.start_time).format('DD-MMM-YY hh:mm A') %>
+                            to
                             <%= moment(b.end_time).format('DD-MMM-YY hh:mm A') %>
                         </p>
+
                         <p>
                           <strong>Status:</strong>
                           <span class="ml-2 px-3 py-1 rounded-full text-sm font-medium
-                                  <%= 
-                                    b.status === 'pending'   ? 'bg-yellow-500 text-yellow-900' :
-                                    b.status === 'confirmed' ? 'bg-blue-500 text-white' :
-                                    b.status === 'completed' ? 'bg-green-500 text-white' :
-                                    b.status === 'canceled'  ? 'bg-red-500 text-white' :
-                                                              'bg-gray-400 text-white'
-                                  %>">
+                <%= 
+                  b.status === 'pending'   ? 'bg-yellow-500 text-yellow-900' :
+                  b.status === 'confirmed' ? 'bg-blue-500 text-white' :
+                  b.status === 'completed' ? 'bg-green-500 text-white' :
+                  b.status === 'canceled'  ? 'bg-red-500 text-white' :
+                                              'bg-gray-400 text-white'
+                %>">
                             <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
                           </span>
                         </p>
-
                       </div>
 
-                      <div class="md:col-span-2 text-right space-x-2 -mt-2">
-                        <a href="/pet-owner/approve-booking/<%= b.booking_id %>"
-                          onclick="return confirm('Are you sure you want to approve this booking?');"
-                          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
-                          <i class="fa-solid fa-check"></i>&nbsp;Confirm
-                        </a>
+                      <div class="text-right space-x-2">
+                        <form action="/pet-sitter/approve-booking/<%= b.booking_id %>" method="POST"
+                          onsubmit="return confirm('Are you sure you want to approve this booking?');" class="inline">
+                          <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
+                            <i class="fa-solid fa-check"></i> Confirm
+                          </button>
+                        </form>
+
+                        <form action="/pet-sitter/cancel-booking/<%= b.booking_id %>" method="POST"
+                          onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="inline">
+                          <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold">
+                            <i class="fa-solid fa-xmark"></i> Cancel
+                          </button>
+                        </form>
                       </div>
+
                       <% }) %>
                   </ul>
+
                   <% } %>
             </section>
           </div>
@@ -225,7 +236,6 @@
         activateTab(tabBookings);
       });
     </script>
-
 </body>
 
 </html>
