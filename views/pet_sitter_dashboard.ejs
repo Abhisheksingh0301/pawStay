@@ -86,6 +86,22 @@
                   <p><span class="font-semibold text-gray-600">Experience:</span>
                     <%= provider.years_of_experience || 0 %> years
                   </p>
+                  <p>
+                    <span class="font-semibold text-gray-600">Type of pets:</span>
+
+                    <% if (provider.pet_category) { %>
+                      <% const colors=['bg-green-100 text-green-700', 'bg-purple-100 text-purple-700' ]; %>
+
+                        <% provider.pet_category.split(',').forEach((pet, i)=> { %>
+                          <span
+                            class="ml-2 inline-block rounded-full px-3 py-1 text-sm font-medium <%= colors[i % colors.length] %>">
+                            <%= pet.trim() %>
+                          </span>
+                          <% }) %>
+                            <% } else { %>
+                              <span class="ml-2 text-gray-400">Not specified</span>
+                              <% } %>
+                  </p>
                   <p><span class="font-semibold text-gray-600">Location:</span>
                     <%= user.location || 'Not provided' %>
                   </p>
@@ -118,7 +134,7 @@
               <h2 class="text-xl font-semibold mb-4">Performance</h2>
               <p>
                 <span class="font-semibold text-gray-600">Rating:</span>
-                <span class="text-yellow-500 font-bold">
+                <span class="text-yellow-600 font-bold">
                   <%= provider.rating ? provider.rating.toFixed(1) : 'Not rated yet' %> ⭐
                 </span>
               </p>

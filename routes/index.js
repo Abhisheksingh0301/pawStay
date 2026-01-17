@@ -690,5 +690,42 @@ router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
   });
 })
 
+//Function to get bookings by provider's user ID
+function getBookingsByProviderUserId(db, userId) {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+      SELECT * FROM bookings b
+        INNER JOIN pets t ON b.pet_id = t.pet_id
+        INNER JOIN users owner ON t.owner_id = owner.user_id
+        INNER JOIN providers p ON b.provider_id = p.provider_id
+      WHERE p.user_id = ?
+      `,
+      [userId],
+      (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      }
+    );
+  });
+}
+//Method to use the above function
+// app.get('/pet-sitter/dashboard', async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     const bookings = await getBookingsByProviderUserId(db, user.user_id);
+
+//     res.render('pet_sitter_dashboard', {
+//       title: 'Pet Sitter Dashboard',
+//       user,
+//       provider,
+//       bookings,
+//       moment
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error loading bookings');
+//   }
+// });
 
 module.exports = router;
