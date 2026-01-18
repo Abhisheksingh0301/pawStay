@@ -209,6 +209,25 @@
                                                 <p><span class="font-semibold">Experience:</span>
                                                     <%= provider.years_of_experience %> years
                                                 </p>
+                                                <p><span class="font-semibold">Pet Category</span>
+                                                    <% if (provider.pet_category) { %>
+                                                        <% const colors = [
+                                                            'bg-green-100 text-green-700',
+                                                            'bg-purple-100 text-purple-700'
+                                                        ]; %>
+
+
+                                                            <% provider.pet_category.split(',').forEach((pet, i)=> { %>
+                                                                <span
+                                                                    class="ml-2 inline-block rounded-full px-3 py-1 text-sm font-medium <%= colors[i % colors.length] %>">
+                                                                    <%= pet.trim() %>
+                                                                </span>
+                                                                <% }) %>
+                                                                    <% } else { %>
+                                                                        <span class="ml-2 text-gray-400">Not
+                                                                            specified</span>
+                                                                        <% } %>
+                                                </p>
 
                                                 <% if (provider.price_per_service) { %>
                                                     <p><span class="font-semibold">Price:</span>
@@ -296,9 +315,10 @@
 
                                                 <p>
                                                     <span class="font-semibold">Status:</span>
-                                                    <span class="
+                                                    <span class=" rounded-full px-3 py-1 bg-blue-600 font-semibold  
                                         <%= booking.status === 'pending' ? 'text-yellow-400' :
                                             booking.status === 'approved' ? 'text-green-400' :
+                                            booking.status === 'completed' ? 'text-green-400' :
                                             'text-red-400' %>
                                     ">
                                                         <%= booking.status.charAt(0).toUpperCase() +

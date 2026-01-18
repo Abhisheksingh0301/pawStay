@@ -66,6 +66,22 @@
                                 <span class="font-semibold text-gray-300">Experience:</span>
                                 <%= providers.years_of_experience %> years
                             </p>
+                            <p>
+                                <span class="font-semibold text-gray-300">Pet Category:</span>
+                                <% if (providers.pet_category) { %>
+                                    <% const colors=['bg-green-100 text-green-700', 'bg-purple-100 text-purple-700' ];
+                                        %>
+
+                                        <% providers.pet_category.split(',').forEach((pet, i)=> { %>
+                                            <span
+                                                class="ml-2 inline-block rounded-full px-3 py-1 text-sm font-medium <%= colors[i % colors.length] %>">
+                                                <%= pet.trim() %>
+                                            </span>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <span class="ml-2 text-gray-400">Not specified</span>
+                                                    <% } %>
+                            </p>
 
                             <% if (providers.price_per_service) { %>
                                 <p>

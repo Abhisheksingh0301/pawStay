@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const db = require("../db/database");
 const auth = require('./middleware/auth');
 const moment = require('moment');
+const updateBookingStatus = require('./updateBookings');
 
 const multer = require('multer');
 const path = require('path');
@@ -71,7 +72,8 @@ router.post('/login', async (req, res) => {
         first_name: user.first_name,
         user_type: user.user_type
       };
-
+      //Update booking status after login
+      await updateBookingStatus(db);
       // Pet owner
       if (user.user_type === 'pet_owner') {
         return res.redirect('/pet-owner/dashboard');
@@ -81,7 +83,6 @@ router.post('/login', async (req, res) => {
       if (user.user_type === 'provider') {
         db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
           if (err) return res.status(500).send('Error loading provider');
-
           db.all(`
             SELECT * from bookings b
               INNER JOIN pets t ON b.pet_id = t.pet_id
@@ -92,7 +93,7 @@ router.post('/login', async (req, res) => {
             [user.user_id],
             (err, bookings) => {
               if (err) return res.status(500).send('Error loading bookings');
-              console.log("Bookings:", bookings);
+              // console.log("Bookings:", bookings);
               //console.log(req.session.user.id);
               return res.render('pet_sitter_dashboard', {
                 title: 'Pet Sitter Dashboard',
@@ -161,6 +162,7 @@ router.post(
       bio,
       certifications,
       years_of_experience,
+      pet_category,
       services_offered,
       price_per_service
     } = req.body;
@@ -175,12 +177,13 @@ router.post(
         bio,
         certifications,
         years_of_experience,
+        pet_category,
         profile_picture,
         services_offered,
         price_per_service,
         rating
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const servicesString = Array.isArray(services_offered)
       ? services_offered.join(',')
@@ -190,6 +193,7 @@ router.post(
       bio,
       certifications,
       years_of_experience,
+      pet_category,
       profilePicture,
       servicesString,
       price_per_service,
@@ -287,6 +291,7 @@ router.get('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
       p.bio,
       p.certifications,
       p.years_of_experience,
+      p.pet_category,
       p.services_offered,
       p.price_per_service,
       p.profile_picture AS provider_profile_picture
@@ -320,6 +325,7 @@ router.get('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
           bio: row.bio,
           certifications: row.certifications,
           years_of_experience: row.years_of_experience,
+          pet_category: row.pet_category,
           services_offered: row.services_offered,
           price_per_service: row.price_per_service,
           profile_picture: row.provider_profile_picture
@@ -337,6 +343,7 @@ router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
     bio,
     certifications,
     years_of_experience,
+    pet_category,
     price_per_service,
     location,
     first_name,
@@ -360,6 +367,7 @@ router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
        SET bio = ?,
            certifications = ?,
            years_of_experience = ?,
+           pet_category = ?,
            services_offered = ?,
            price_per_service = ?
        WHERE user_id = ?`,
@@ -367,6 +375,7 @@ router.post('/pet_sitter/edit-profile/:userId', auth, (req, res) => {
         bio,
         certifications,
         years_of_experience,
+        pet_category,
         services_offered,
         price_per_service,
         userId
@@ -438,6 +447,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
               providers.bio,
               providers.certifications,
               providers.years_of_experience,
+              providers.pet_category,
               providers.services_offered,
               providers.price_per_service,
               providers.rating,
@@ -516,6 +526,7 @@ router.get('/pet-owner/bookings/:providerId', auth, (req, res) => {
               providers.bio,
               providers.certifications,
               providers.years_of_experience,
+              providers.pet_category,
               providers.services_offered,
               providers.price_per_service,
               providers.rating,
@@ -681,7 +692,7 @@ router.post('/pet-sitter/cancel-booking/:booking_id', (req, res) => {
 router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
   const bookingId = req.params.booking_id;
 
-  db.run(`UPDATE bookings SET status = 'confirmed' WHERE booking_id = ?`, [bookingId], (err) => {
+  db.run(`UPDATE bookings SET status = 'confirmed' WHERE booking_id = ? AND status='pending'`, [bookingId], (err) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Error approving booking');
@@ -690,42 +701,6 @@ router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
   });
 })
 
-//Function to get bookings by provider's user ID
-function getBookingsByProviderUserId(db, userId) {
-  return new Promise((resolve, reject) => {
-    db.all(
-      `
-      SELECT * FROM bookings b
-        INNER JOIN pets t ON b.pet_id = t.pet_id
-        INNER JOIN users owner ON t.owner_id = owner.user_id
-        INNER JOIN providers p ON b.provider_id = p.provider_id
-      WHERE p.user_id = ?
-      `,
-      [userId],
-      (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      }
-    );
-  });
-}
-//Method to use the above function
-// app.get('/pet-sitter/dashboard', async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     const bookings = await getBookingsByProviderUserId(db, user.user_id);
 
-//     res.render('pet_sitter_dashboard', {
-//       title: 'Pet Sitter Dashboard',
-//       user,
-//       provider,
-//       bookings,
-//       moment
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('Error loading bookings');
-//   }
-// });
 
 module.exports = router;

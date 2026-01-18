@@ -1,0 +1,21 @@
+// Function to update booking status
+module.exports = async function updateBookingStatus(db) {
+    const now = new Date().toISOString().slice(0, 16);
+
+    const sql = `
+        UPDATE bookings
+        SET status = 'completed'
+        WHERE status != 'completed'
+        AND end_time IS NOT NULL
+        AND end_time < CURRENT_TIMESTAMP  --This CURRENT_TIMESTAMP will comes from server time
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.run(sql, function (err) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(this.changes); 
+        });
+    });
+};
