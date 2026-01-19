@@ -5,6 +5,7 @@ const db = require("../db/database");
 const auth = require('./middleware/auth');
 const moment = require('moment');
 const updateBookingStatus = require('./updateBookings');
+const checkcompletedBookings = require('./updateBookings')
 
 const multer = require('multer');
 const path = require('path');
@@ -76,6 +77,11 @@ router.post('/login', async (req, res) => {
       await updateBookingStatus(db);
       // Pet owner
       if (user.user_type === 'pet_owner') {
+        // const completedBookings = await checkcompletedBookings(db, user.user_id);
+        // if (completedBookings) {
+        //   // redirect to ratings page with booking id
+        //   return res.redirect(`/ratings/${completedBookings.booking_id}/${completedBookings.provider_id}`);
+        // }
         return res.redirect('/pet-owner/dashboard');
       }
 
@@ -104,7 +110,7 @@ router.post('/login', async (req, res) => {
             }
           );
         });
-        return; 
+        return;
       }
 
       // Unknown user type
@@ -466,6 +472,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
               db.all(`
              SELECT
               b.booking_id,
+              b.provider_id,
               b.start_time,
               b.end_time,
               b.price,
@@ -677,7 +684,7 @@ router.post('/pet-owner/bookings', auth, (req, res) => {
 })
 
 //pet owner cancel booking post method
-router.post('/pet-sitter/cancel-booking/:booking_id', (req, res) => {
+router.post('/pet-sitter/cancel-booking/:booking_id', auth, (req, res) => {
   const bookingId = req.params.booking_id;
 
   db.run(`UPDATE bookings SET status = 'canceled' WHERE booking_id = ?`, [bookingId], (err) => {
@@ -689,7 +696,7 @@ router.post('/pet-sitter/cancel-booking/:booking_id', (req, res) => {
   });
 })
 //pet owner approve booking post method
-router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
+router.post('/pet-sitter/approve-booking/:booking_id', auth, (req, res) => {
   const bookingId = req.params.booking_id;
 
   db.run(`UPDATE bookings SET status = 'confirmed' WHERE booking_id = ? AND status='pending'`, [bookingId], (err) => {
@@ -701,6 +708,118 @@ router.post('/pet-sitter/approve-booking/:booking_id', (req, res) => {
   });
 })
 
+
+//Ratings page
+router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
+  res.render('ratings', {
+    title: 'Rate Your Experience',
+    bookingId: req.params.bookingId,
+    providerId: req.params.providerId,
+    user: req.session.user
+  });
+});
+
+//Ratings post method Submit ratings
+router.post('/ratings', auth, async (req, res) => {
+  try {
+    const { booking_id, provider_id, rating, review_text } = req.body;
+
+    // Basic validation
+    if (!booking_id || !rating) {
+      return res.status(400).render('msg', {
+        title: 'Rating and booking are required',
+        user: req.session.user
+      });
+    }
+
+    // Prevent duplicate reviews
+    const existingReview = await new Promise((resolve, reject) => {
+      db.get(
+        'SELECT review_id FROM reviews WHERE booking_id = ?',
+        [booking_id],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row);
+        }
+      );
+    });
+
+    if (existingReview) {
+      return res.render('msg', {
+        title: 'You have already reviewed this booking',
+        user: req.session.user
+      });
+    }
+
+    // Insert review 
+    await new Promise((resolve, reject) => {
+      db.run(
+        `
+        INSERT INTO reviews (booking_id, rating, review_text, photo_update)
+        VALUES (?, ?, ?, NULL)
+        `,
+        [booking_id, rating, review_text || null],
+        function (err) {
+          if (err) return reject(err);
+          resolve();
+        }
+      );
+    });
+    //Update reviewed column
+    await new Promise((resolve, reject) => {
+      db.run(
+        `UPDATE bookings SET reviewed = 1 WHERE booking_id = ?`,
+        [booking_id],
+        (err) => {
+          if (err) return reject(err);
+          resolve();
+        }
+      );
+    });
+
+    // 🔥 CALCULATE PROVIDER AVERAGE RATING
+    const avgRating = await new Promise((resolve, reject) => {
+      db.get(
+        `
+        SELECT ROUND(AVG(r.rating), 1) AS avg_rating
+        FROM reviews r
+        INNER JOIN bookings b ON r.booking_id = b.booking_id
+        WHERE b.provider_id = ?
+        `,
+        [provider_id],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row.avg_rating);
+        }
+      );
+    });
+
+    // 🔥 UPDATE PROVIDER RATING
+    await new Promise((resolve, reject) => {
+      db.run(
+        `
+        UPDATE providers
+        SET rating = ?
+        WHERE provider_id = ?
+        `,
+        [avgRating, provider_id],
+        err => {
+          if (err) return reject(err);
+          resolve();
+        }
+      );
+    });
+    // Redirect after success
+    res.render('msg', {
+      title: 'Thank you for your feedback!',
+      user: req.session.user
+    });
+
+  } catch (err) {
+    console.error('Rating submission error:', err);
+    res.status(500).send('Internal server error');
+  }
+});
 
 
 module.exports = router;

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/tailwind/output.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-cover bg-center bg-no-repeat"
+    style="background-image: url('/images/pet-sitter.jpg');">
+
+    <%- include('header') %>
+
+    <div class="flex items-center justify-center min-h-screen bg-black/40">
+        <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-lg">
+
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">
+                Rate Your Experience 🐾
+            </h2>
+
+            <p class="text-center text-gray-500 mb-6">
+                Booking ID: <span class="font-semibold"><%= bookingId %></span>
+            </p>
+
+            <form action="/ratings" method="POST" class="space-y-6">
+
+                <!-- Hidden booking id -->
+                <input type="hidden" name="booking_id" value="<%= bookingId %>">
+                <input type="hidden" name="provider_id" value="<%= providerId %>">
+
+                <!-- Rating -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">
+                        Rating
+                    </label>
+
+                    <div class="flex justify-between">
+                        <% for(let i = 1; i <= 5; i++) { %>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="radio" name="rating" value="<%= i %>" class="hidden peer" required>
+                                <span
+                                    class="text-3xl peer-checked:text-yellow-400 text-gray-300 transition">
+                                    ★
+                                </span>
+                                <span class="text-xs text-gray-500"><%= i %></span>
+                            </label>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Review Text -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">
+                        Review
+                    </label>
+                    <textarea name="review_text"
+                        rows="4"
+                        placeholder="Share your experience with the pet sitter..."
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:ring focus:ring-blue-300 focus:outline-none resize-none"></textarea>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Submit Review
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>

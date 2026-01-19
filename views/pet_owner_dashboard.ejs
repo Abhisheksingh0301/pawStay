@@ -211,10 +211,8 @@
                                                 </p>
                                                 <p><span class="font-semibold">Pet Category</span>
                                                     <% if (provider.pet_category) { %>
-                                                        <% const colors = [
-                                                            'bg-green-100 text-green-700',
-                                                            'bg-purple-100 text-purple-700'
-                                                        ]; %>
+                                                        <% const colors=[ 'bg-green-100 text-green-700'
+                                                            , 'bg-purple-100 text-purple-700' ]; %>
 
 
                                                             <% provider.pet_category.split(',').forEach((pet, i)=> { %>
@@ -318,12 +316,16 @@
                                                     <span class=" rounded-full px-3 py-1 bg-blue-600 font-semibold  
                                         <%= booking.status === 'pending' ? 'text-yellow-400' :
                                             booking.status === 'approved' ? 'text-green-400' :
-                                            booking.status === 'completed' ? 'text-green-400' :
+                                            booking.status === 'completed' ? 'text-blue-400' :
                                             'text-red-400' %>
                                     ">
                                                         <%= booking.status.charAt(0).toUpperCase() +
                                                             booking.status.slice(1) %>
 
+                                                    </span>
+                                                    <span
+                                                        class="font-semibold float-right rounded-full px-3 py-1 bg-blue-600 text-yellow-100">
+                                                        <a href="/ratings/<%= booking.booking_id %>/<%= booking.provider_id %>">Rate us</a>
                                                     </span>
                                                 </p>
                                             </div>

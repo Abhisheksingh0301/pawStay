@@ -1,6 +1,6 @@
 // Function to update booking status
 module.exports = async function updateBookingStatus(db) {
-    const now = new Date().toISOString().slice(0, 16);
+    // const now = new Date().toISOString().slice(0, 16);
 
     const sql = `
         UPDATE bookings
@@ -19,3 +19,23 @@ module.exports = async function updateBookingStatus(db) {
         });
     });
 };
+
+module.exports=async function checkcompletedBookings(db, userId){
+    const sql = `
+        SELECT b.booking_id, b.provider_id
+        FROM bookings b
+        INNER JOIN pets p ON b.pet_id = p.pet_id
+        WHERE p.owner_id = ?
+        AND b.status = 'completed'
+        AND b.reviewed = 0
+        LIMIT 1
+    `;
+    return new Promise((resolve, reject) => {
+        db.get(sql, [userId], (err, row) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(row); 
+        });
+    });
+}   

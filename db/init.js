@@ -63,7 +63,7 @@ db.serialize(() => {
     status TEXT NOT NULL CHECK (status IN ('pending', 'confirmed', 'completed', 'canceled')),
     price REAL CHECK (price >= 0),
     payment_status TEXT NOT NULL CHECK (payment_status IN ('paid', 'pending', 'failed')),
-
+    reviewed INTEGER DEFAULT 0 CHECK (reviewed IN (0,1)),
     FOREIGN KEY (pet_id) REFERENCES pets(pet_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
