@@ -45,27 +45,27 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             <% pets.forEach(pet=> { %>
                                 <div
-                                    class="bg-white/80 backdrop-blur-md border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                    <h3 class="text-xl font-bold text-amber-600 mb-2 border-b-3 border-amber-400 pb-1">
+                                    class="bg-black/50 backdrop-blur-md border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                                    <h3 class="text-xl font-bold text-amber-400 mb-2 border-b-3 border-amber-400 pb-1">
                                         <%= pet.pet_name %>
                                     </h3>
-                                    <div class="space-y-1 text-sm text-gray-700">
-                                        <p><span class="font-semibold text-gray-900">Type:</span>
+                                    <div class="space-y-1 text-md text-gray-100 font-serif">
+                                        <p><span class="font-semibold text-gray-100">Type:</span>
                                             <%= pet.pet_type %>
                                         </p>
                                         <% if (pet.breed) { %>
-                                            <p><span class="font-semibold text-gray-900">Breed:</span>
+                                            <p><span class="font-semibold text-gray-100">Breed:</span>
                                                 <%= pet.breed %>
                                             </p>
                                             <% } %>
                                                 <% if (pet.size) { %>
-                                                    <p><span class="font-semibold text-gray-900">Size:</span>
+                                                    <p><span class="font-semibold text-gray-100">Size:</span>
                                                         <%= pet.size %>
                                                     </p>
                                                     <% } %>
                                                         <% if (pet.age !==null) { %>
-                                                            <p><span class="font-semibold text-gray-900">Age:</span>
-                                                                <%= pet.age %> years
+                                                            <p><span class="font-semibold text-gray-100">Age:</span>
+                                                                <%= pet.age %> year(s)
                                                             </p>
                                                             <% } %>
                                     </div>
