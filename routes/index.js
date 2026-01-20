@@ -777,7 +777,7 @@ router.post('/ratings', auth, async (req, res) => {
       );
     });
 
-    // 🔥 CALCULATE PROVIDER AVERAGE RATING
+    // CALCULATE PROVIDER AVERAGE RATING
     const avgRating = await new Promise((resolve, reject) => {
       db.get(
         `
@@ -794,7 +794,7 @@ router.post('/ratings', auth, async (req, res) => {
       );
     });
 
-    // 🔥 UPDATE PROVIDER RATING
+    // UPDATE PROVIDER RATING
     await new Promise((resolve, reject) => {
       db.run(
         `
