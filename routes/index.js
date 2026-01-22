@@ -723,6 +723,7 @@ router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
 router.post('/ratings', auth, async (req, res) => {
   try {
     const { booking_id, provider_id, rating, review_text } = req.body;
+    console.log('Rating data:', req.body);
 
     // Basic validation
     if (!booking_id || !rating) {

@@ -229,7 +229,7 @@
 
                                                 <% if (provider.price_per_service) { %>
                                                     <p><span class="font-semibold">Price:</span>
-                                                        $<%= provider.price_per_service %>
+                                                        $&nbsp;<%= provider.price_per_service %>
                                                     </p>
                                                     <% } %>
 
@@ -238,12 +238,6 @@
                                                                 <%= provider.rating %> ⭐
                                                             </p>
                                                             <% } %>
-                                                                <p><span class="font-semibold">Phone:</span>
-                                                                    *********************
-                                                                </p>
-                                                                <p><span class="font-semibold">Email:</span>
-                                                                    ###################
-                                                                </p>
                                             </div>
                                         </div>
 
@@ -325,7 +319,9 @@
                                                     </span>
                                                     <span
                                                         class="font-semibold float-right rounded-full px-3 py-1 bg-blue-600 text-yellow-100">
-                                                        <a href="/ratings/<%= booking.booking_id %>/<%= booking.provider_id %>">Rate us</a>
+                                                        <a
+                                                            href="/ratings/<%= booking.booking_id %>/<%= booking.provider_id %>">Rate
+                                                            us</a>
                                                     </span>
                                                 </p>
                                             </div>
