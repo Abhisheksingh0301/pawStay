@@ -110,6 +110,9 @@
                                 class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
                                 <option value="dog">Dog</option>
                                 <option value="cat">Cat</option>
+                                <option value="fish">Fish</option>
+                                <option value="rabbit">Rabbit</option>
+                                <option value="bird">Bird</option>
                                 <option value="exotic">Exotic</option>
                             </select>
                         </div>
@@ -176,6 +179,28 @@
             <!-- Find Pet Sitters -->
             <div id="content-bookings" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-4 text-white">Find Pet Sitters</h2>
+                <!-- Filters -->
+                <form method="GET" action="/pet-owner/dashboard" class="mb-6">
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4 bg-black/30 p-4 rounded-lg">
+                        <input type="text" id="filter-location" placeholder="Enter location"
+                            class="flex-1 border border-gray-200 rounded px-3 py-2" />
+
+                        <select id="filter-pet" class="text-blue-200 bg-black/30 border rounded">
+                            <option value="">All Pets</option>
+                            <option value="dog" class="text-gray-800">Dog</option>`
+                            <option value="cat" class="text-gray-800">Cat</option>
+                            <option value="fish" class="text-gray-800">Fish</option>
+                            <option value="bird" class="text-gray-800">Bird</option>
+                            <option value="exotic" class="text-gray-800">Exotic</option>
+                        </select>
+
+                        <button type="button" id="filter-btn" class="bg-orange-600 text-white px-6 py-2 rounded">
+                            Search
+                        </button>
+
+                    </div>
+
+                </form>
 
                 <% if (providers.length===0) { %>
                     <p class="text-gray-100 font-semibold">No pet sitters available</p>
@@ -183,8 +208,9 @@
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                             <% providers.forEach(provider=> { %>
-                                <div
-                                    class="flex bg-black/50 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden">
+                                <div class="flex bg-black/50 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden provider-card"
+                                    data-location="<%= provider.location.toLowerCase() %>"
+                                    data-pet="<%= provider.pet_category.toLowerCase() %>">
 
                                     <!-- Profile Image -->
                                     <img src="<%= provider.provider_profile_picture || '/images/default-profile.png' %>"
@@ -317,12 +343,16 @@
                                                             booking.status.slice(1) %>
 
                                                     </span>
-                                                    <span
-                                                        class="font-semibold float-right rounded-full px-3 py-1 bg-blue-600 text-yellow-100">
-                                                        <a
-                                                            href="/ratings/<%= booking.booking_id %>/<%= booking.provider_id %>">Rate
-                                                            us</a>
-                                                    </span>
+                                                    <% if (booking.status==='completed' ) { %>
+                                                        <span
+                                                            class="font-semibold float-right rounded-full px-3 py-1 bg-blue-600 text-yellow-100">
+                                                            <a
+                                                                href="/ratings/<%= booking.booking_id %>/<%= booking.provider_id %>">
+                                                                Rate us
+                                                            </a>
+                                                        </span>
+                                                        <% } %>
+
                                                 </p>
                                             </div>
                                         </div>
@@ -334,10 +364,6 @@
                         </div>
                         <% } %>
             </div>
-
-
-
-
         </main>
 
         <!-- Tabs JS -->
@@ -361,6 +387,23 @@
                 });
             });
         </script>
+        <script>
+            document.getElementById('filter-btn').addEventListener('click', () => {
+                const location = document.getElementById('filter-location').value.toLowerCase();
+                const pet = document.getElementById('filter-pet').value.toLowerCase();
+
+                document.querySelectorAll('.provider-card').forEach(card => {
+                    const cardLocation = card.dataset.location;
+                    const cardPet = card.dataset.pet;
+
+                    const matchLocation = !location || cardLocation.includes(location);
+                    const matchPet = !pet || cardPet.includes(pet);
+
+                    card.style.display = (matchLocation && matchPet) ? '' : 'none';
+                });
+            });
+        </script>
+
 
 </body>
 

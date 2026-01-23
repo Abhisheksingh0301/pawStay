@@ -711,13 +711,32 @@ router.post('/pet-sitter/approve-booking/:booking_id', auth, (req, res) => {
 
 //Ratings page
 router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
-  res.render('ratings', {
-    title: 'Rate Your Experience',
-    bookingId: req.params.bookingId,
-    providerId: req.params.providerId,
-    user: req.session.user
+  const userId = req.session.user.id;
+  const { bookingId, providerId } = req.params;
+
+  db.get(`
+    SELECT b.*, p.owner_id
+    FROM bookings b
+    INNER JOIN pets p ON b.pet_id = p.pet_id
+    WHERE b.booking_id = ? AND b.provider_id = ? AND b.status = 'completed'
+  `, [bookingId, providerId], (err, booking) => {
+    if (err) return res.status(500).send('Database error');
+    if (!booking || booking.owner_id !== userId) {
+      res.render('msg',{
+        title:'You are not authorized to review this booking',
+        user:req.session.user
+      })
+    }
+
+    res.render('ratings', {
+      title: 'Rate Your Experience',
+      bookingId,
+      providerId,
+      user: req.session.user
+    });
   });
 });
+
 
 //Ratings post method Submit ratings
 router.post('/ratings', auth, async (req, res) => {
