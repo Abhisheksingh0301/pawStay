@@ -45,7 +45,7 @@
             Please add your details to start receiving bookings.
           </p>
 
-          <a href="/pet_sitter_create-profile/<%= user.user_id %>"
+          <a href="/pet_sitter_create-profile/<%= user.id %>"
             class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition">
             Complete Profile
           </a>
@@ -81,7 +81,7 @@
               </div>
 
               <div class="flex flex-col md:flex-row items-start gap-6">
-                <img src="<%= provider.profile_picture || '/images/petstay-logo.png' %>"
+                <img src="<%= provider.profile_picture || '/images/pawstay-logo.png' %>"
                   class="w-32 h-32 rounded-full object-cover border mx-auto md:mx-0" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">

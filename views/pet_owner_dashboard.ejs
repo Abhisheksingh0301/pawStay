@@ -108,12 +108,12 @@
                             <label class="block text-sm font-medium text-gray-700">Pet Type</label>
                             <select name="pet_type" required
                                 class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
-                                <option value="dog">Dog</option>
-                                <option value="cat">Cat</option>
-                                <option value="fish">Fish</option>
-                                <option value="rabbit">Rabbit</option>
-                                <option value="bird">Bird</option>
-                                <option value="exotic">Exotic</option>
+                              <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                            <option value="Rabbit">Rabbit</option>
+                            <option value="Bird">Bird</option>
+                            <option value="Fish">Fish</option>
+                            <option value="Other">Other</option>
                             </select>
                         </div>
 
@@ -186,12 +186,13 @@
                             class="flex-1 border border-gray-200 rounded px-3 py-2" />
 
                         <select id="filter-pet" class="text-blue-200 bg-black/30 border rounded">
-                            <option value="">All Pets</option>
-                            <option value="dog" class="text-gray-800">Dog</option>`
-                            <option value="cat" class="text-gray-800">Cat</option>
-                            <option value="fish" class="text-gray-800">Fish</option>
-                            <option value="bird" class="text-gray-800">Bird</option>
-                            <option value="exotic" class="text-gray-800">Exotic</option>
+                            <option value="" class="text-blue-800">All Pets</option>
+                            <option value="Dog" class="text-blue-800">Dog</option>
+                            <option value="Cat" class="text-blue-800">Cat</option>
+                            <option value="Rabbit" class="text-blue-800">Rabbit</option>
+                            <option value="Bird" class="text-blue-800">Bird</option>
+                            <option value="Fish" class="text-blue-800">Fish</option>
+                            <option value="Other" class="text-blue-800">Other</option>
                         </select>
 
                         <button type="button" id="filter-btn" class="bg-orange-600 text-white px-6 py-2 rounded">
@@ -298,8 +299,8 @@
                                     class="flex bg-black/50 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden">
 
                                     <!-- Provider / Pet Image -->
-                                    <img src="<%= booking.provider_profile_picture || '/images/pawstay-logo.png' %>" alt="Provider Image"
-                                        class="w-40 h-full object-cover" />
+                                    <img src="<%= booking.provider_profile_picture || '/images/pawstay-logo.png' %>"
+                                        alt="Provider Image" class="w-40 h-full object-cover" />
 
                                     <!-- Content -->
                                     <div class="flex flex-col justify-between flex-1 p-4 text-white">

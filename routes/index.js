@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
       // Check password
       const match = await bcrypt.compare(txtpwd, user.password);
       if (!match) {
-        console.log("Invalid pwd");
+        console.log("Invalid password");
         return res.render('msg', { title: 'Invalid password', user: req.session.user || null, 
           backUrl: '/login' });
       }
@@ -95,6 +95,7 @@ router.post('/login', async (req, res) => {
       if (user.user_type === 'provider') {
         db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
           if (err) return res.status(500).send('Error loading provider');
+         
           db.all(`
             SELECT * from bookings b
               INNER JOIN pets t ON b.pet_id = t.pet_id
@@ -474,7 +475,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
                 console.error(err);
                 return res.status(500).send('Error loading providers');
               }
-              //console.log('Providers:', providers);
+              console.log('Providers:', providers);
               db.all(`
              SELECT
               b.booking_id,
@@ -608,7 +609,7 @@ router.post('/pets/add', auth, (req, res) => {
     behavior_notes,
     medical_records
   } = req.body;
-
+console.log(req.body);
   db.run(
     `INSERT INTO pets (
       owner_id, pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>Create Pet Sitter Profile</title>
@@ -8,124 +7,151 @@
   <link rel="icon" sizes="16x16" href="/images/pawstay-logo.png">
 </head>
 
-<body class="min-h-screen bg-cover bg-center bg-no-repeat" 
-      style="background-image: url('/images/pet-sitter-dashboard.jpg');">
+<body class="min-h-screen bg-no-repeat bg-center bg-size[800px_600px]" style="background-image: url('/images/puppy2.jpg');">
 
   <%- include('header', { user }) %>
 
-  <!-- PAGE TITLE -->
-  <div class="bg-blue-600 text-white py-4">
-    <div class="max-w-7xl mx-auto px-6">
-      <h1 class="text-2xl font-bold">Create Pet Sitter Profile</h1>
-      <p class="text-sm mt-1">User ID: <%= user.user_id %></p>
+  <!-- TOP INFO RIBBON -->
+  <div class="relative bg-linear-to-r from-blue-600 to-cyan-500 text-white">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <h1 class="text-3xl font-bold">Become a Pet Sitter 🐾</h1>
+      <p class="mt-2 text-blue-100 max-w-4xl">
+        Share your experience, offer professional pet care services, and connect
+        with pet owners looking for trusted sitters.
+      </p>
     </div>
   </div>
 
-  <!-- MAIN CONTENT (fills remaining screen) -->
-  <main class="flex-1">
-    <div class="grid grid-cols-1 lg:grid-cols-2 h-full" style="background-image: url('/images/pet-sitter.jpg'); background-size: cover; background-position: center;"
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-6 py-10">
+
+    <!-- FORM CARD -->
+    <div class="bg-white/80 rounded-2xl shadow-xl p-8 md:p-10">
+
+      <form
+        action="/pet_sitter/create-profile"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-8"
       >
 
-      <!-- LEFT : FULL HEIGHT BACKGROUND -->
-      <div
-        class="hidden lg:block relative h-full">
-        <!-- <div class="absolute inset-0 bg-black bg-opacity-40"></div> -->
+        <input type="hidden" name="user_id" value="<%= user.user_id %>">
 
-        <div class="relative z-10 h-full flex  p-10 text-white">
+        <!-- BIO (FULL WIDTH ALWAYS) -->
+        <div class="opacity-80">
+          <label class="block font-semibold text-gray-700 mb-2">Bio</label>
+          <textarea
+            name="bio"
+            rows="4"
+            required
+            placeholder="Tell pet owners about yourself..."
+            class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
+          ></textarea>
+        </div>
+
+        <!-- TWO COLUMN GRID (RESPONSIVE) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- CERTIFICATIONS -->
           <div>
-            <h2 class="text-3xl font-bold text-cyan-700">Become a Pet Sitter</h2>
-            <p class="mt-2 text-cyan-600">
-              Share your experience and connect with pet owners
-            </p>
+            <label class="block font-semibold text-gray-700 mb-2">Certifications</label>
+            <input
+              type="text"
+              name="certifications"
+              placeholder="Vet Assistant, Groomer, etc."
+              class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            >
           </div>
+
+          <!-- EXPERIENCE -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-2">Years of Experience</label>
+            <input
+              type="number"
+              name="years_of_experience"
+              min="0"
+              required
+              class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            >
+          </div>
+
+          <!-- PET CATEGORY -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-2">Types of Pets</label>
+            <input
+              type="text"
+              name="pet_category"
+              placeholder="Dogs, Cats, Birds, Rabbits..."
+              required
+              class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            >
+          </div>
+
+          <!-- PRICE -->
+          <div>
+            <label class="block font-semibold text-gray-700 mb-2">Price per Service ($)</label>
+            <input
+              type="number"
+              name="price_per_service"
+              min="0"
+              step="0.01"
+              required
+              class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            >
+          </div>
+
         </div>
-      </div>
 
-      <!-- RIGHT : FORM (centered vertically) -->
-      <div class="flex items-center justify-center bg-gray-200 px-6 opacity-70">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-xl">
-
-          <form
-            action="/pet_sitter/create-profile"
-            method="POST"
-            enctype="multipart/form-data"
-            class="space-y-6"
+        <!-- SERVICES (FULL WIDTH) -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">
+            Services Offered
+            <span class="text-sm text-gray-500">(Ctrl / Cmd + Click to select multiple)</span>
+          </label>
+          <select
+            name="services_offered[]"
+            multiple
+            required
+            class="w-full h-40 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400 focus:outline-none"
           >
-
-            <input type="hidden" name="user_id" value="<%= user.user_id %>">
-
-            <!-- BIO -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Bio</label>
-              <textarea name="bio" rows="4" required
-                class="w-full border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none"></textarea>
-            </div>
-
-            <!-- CERTIFICATIONS -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Certifications</label>
-              <input type="text" name="certifications" placeholder="Like Vet Assistant"
-                class="w-full border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none">
-            </div>
-
-            <!-- EXPERIENCE -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Years of Experience</label>
-              <input type="number" name="years_of_experience" min="0" required
-                class="w-full border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none">
-            </div>
-            <!-- PET CATEGORY -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Types of Pets You Can Care For</label>
-              <input type="text" name="pet_category" placeholder="e.g., Dogs, Cats, Birds, Fish, Rabbit" required
-                class="w-full border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none">
-            </div>
-
-            <!-- SERVICES -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Services Offered (Use Ctrl+Click to select multiple)    </label>
-              <select name="services_offered[]" multiple required
-                class="w-full h-40 border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none">
-                <option value="Dog_walking">Dog Walking</option>
-                <option value="Pet_boarding">Pet Boarding</option>
-                <option value="Pet_daycare">Pet Daycare</option>
-                <option value="Overnight_care">Overnight Care</option>
-                <option value="Drop_in_visits">Drop-in Visits</option>
-                <option value="Special_needs_care">Special Needs Care</option>
-                <option value="Emergency_and_vet_visits">Emergency & Vet Visits</option>
-              </select>
-            </div>
-
-            <!-- PRICE -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Price per Service ($)</label>
-              <input type="number" name="price_per_service" min="0" step="0.01" required
-                class="w-full border rounded px-3 py-2 focus:ring focus:ring-green-300 focus:outline-none">
-            </div>
-
-            <!-- PROFILE PICTURE -->
-            <div>
-              <label class="block font-semibold text-gray-700 mb-2">Profile Picture</label>
-              <input type="file" name="profile_picture" accept="image/*">
-            </div>
-
-            <!-- ACTIONS -->
-            <div class="flex justify-end gap-4 pt-4">
-              <a href="/pet_sitter_dashboard"
-                class="px-5 py-2 border rounded text-gray-700 hover:bg-gray-100">
-                Cancel
-              </a>
-              <button type="submit"
-                class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
-                Save Profile
-              </button>
-            </div>
-
-          </form>
-
+            <option value="Dog_walking">Dog Walking</option>
+            <option value="Pet_boarding">Pet Boarding</option>
+            <option value="Pet_daycare">Pet Daycare</option>
+            <option value="Overnight_care">Overnight Care</option>
+            <option value="Drop_in_visits">Drop-in Visits</option>
+            <option value="Special_needs_care">Special Needs Care</option>
+            <option value="Emergency_and_vet_visits">Emergency & Vet Visits</option>
+          </select>
         </div>
-      </div>
 
+        <!-- PROFILE PICTURE (FULL WIDTH) -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Profile Picture</label>
+          <input
+            type="file"
+            name="profile_picture"
+            accept="image/*"
+            class="block w-full text-sm text-gray-600"
+          >
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="flex justify-end gap-4 pt-6 border-t">
+          <a
+            href="/pet_sitter_dashboard"
+            class="px-6 py-2 rounded-lg border text-gray-700 hover:bg-gray-100 transition"
+          >
+            Cancel
+          </a>
+          <button
+            type="submit"
+            class="bg-green-600 text-white px-8 py-2 rounded-lg hover:bg-green-700 transition shadow"
+          >
+            Save Profile
+          </button>
+        </div>
+
+      </form>
     </div>
   </main>
 

@@ -5,7 +5,7 @@ var router = express.Router();
 const auth = require('./middleware/auth');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
@@ -23,7 +23,7 @@ router.get('/signup', async (req, res) => {
 // Signup post form
 router.post("/signup", async (req, res) => {
   try {
-    const { txtfirstname, txtlstname, txtUserType, txtemail, txtphone, txtpwd, txtcnfrmpwd } = req.body;
+    const { txtfirstname, txtlstname, txtUserType, txtemail, txtphone, txtpwd, txtcnfrmpwd, txtlocation } = req.body;
 
     // 1. Check duplicate user (by email)
     const checkStmt = db.prepare(`
@@ -46,7 +46,7 @@ router.post("/signup", async (req, res) => {
     if (txtpwd !== txtcnfrmpwd) {
       return res.render("msg", {
         title: "Password didn't match", user: req.session.user || null,
-         backUrl: '/users/signup'
+        backUrl: '/users/signup'
       });
     }
 
@@ -62,9 +62,10 @@ router.post("/signup", async (req, res) => {
         last_name,
         email,
         phone_number,
+        location,
         password
       )
-      VALUES (?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
     insertStmt.run(
@@ -73,13 +74,14 @@ router.post("/signup", async (req, res) => {
       txtlstname,
       txtemail,
       txtphone,
+      txtlocation,
       hashedPassword
     );
 
 
     res.render("msg", {
       title: "Signup successful, now click on Login link", user: req.session.user || null,
-      backUrl:'/login'
+      backUrl: '/login'
     });
 
   } catch (err) {

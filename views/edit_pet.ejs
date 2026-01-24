@@ -44,9 +44,12 @@
           name="pet_type"
           required
           class="mt-1 w-full rounded border border-gray-700 px-3 py-2">
-          <option value="dog" <%= pet.pet_type==='dog' ? 'selected' : '' %>>Dog</option>
-          <option value="cat" <%= pet.pet_type==='cat' ? 'selected' : '' %>>Cat</option>
-          <option value="exotic" <%= pet.pet_type==='exotic' ? 'selected' : '' %>>Exotic</option>
+          <option value="Dog" <%= pet.pet_type==='Dog' ? 'selected' : '' %>>Dog</option>
+          <option value="Cat" <%= pet.pet_type==='Cat' ? 'selected' : '' %>>Cat</option>
+          <option value="Fish" <%= pet.pet_type==='Fish' ? 'selected' : '' %>>Fish</option>
+          <option value="Bird" <%= pet.pet_type==='Bird' ? 'selected' : '' %>>Bird</option>
+          <option value="Rabbit" <%= pet.pet_type==='Rabbit' ? 'selected' : '' %>>Rabbit</option>
+          <option value="Other" <%= pet.pet_type==='Other' ? 'selected' : '' %>>Other</option>
         </select>
       </div>
 
