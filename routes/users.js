@@ -37,14 +37,16 @@ router.post("/signup", async (req, res) => {
     if (count > 0) {
       console.log("Duplicate name");
       return res.render("msg", {
-        title: "Duplicate name", user: req.session.user || null
+        title: "Duplicate name", user: req.session.user || null,
+        backUrl: '/users/signup'
       });
     }
 
     // 2. Check password match
     if (txtpwd !== txtcnfrmpwd) {
       return res.render("msg", {
-        title: "Password didn't match", user: req.session.user || null
+        title: "Password didn't match", user: req.session.user || null,
+         backUrl: '/users/signup'
       });
     }
 
@@ -76,7 +78,8 @@ router.post("/signup", async (req, res) => {
 
 
     res.render("msg", {
-      title: "Signup successful, now click on Login link", user: req.session.user || null
+      title: "Signup successful, now click on Login link", user: req.session.user || null,
+      backUrl:'/login'
     });
 
   } catch (err) {

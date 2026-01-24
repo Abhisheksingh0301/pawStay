@@ -58,13 +58,19 @@ router.post('/login', async (req, res) => {
       if (err) return res.status(500).send('Internal server error');
 
       if (!user) {
-        return res.render('msg', { title: 'This email-ID is not registered with us', user: req.session.user || null });
+        return res.render('msg', {
+          title: 'This email-ID is not registered with us',
+          user: req.session.user || null,
+          backUrl: '/login'
+        });
       }
 
       // Check password
       const match = await bcrypt.compare(txtpwd, user.password);
       if (!match) {
-        return res.render('msg', { title: 'Invalid password', user: req.session.user || null });
+        console.log("Invalid pwd");
+        return res.render('msg', { title: 'Invalid password', user: req.session.user || null, 
+          backUrl: '/login' });
       }
 
       // Save user info in session
@@ -258,7 +264,7 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
                 return res.status(500).send('Error loading bookings');
               }
 
-              console.log("Bookings:", bookings);
+              //console.log("Bookings:", bookings);
 
               res.render('pet_sitter_dashboard', {
                 title: 'Pet Sitter Dashboard',
@@ -436,7 +442,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
             console.error(err);
             return res.status(500).send('Error loading pets');
           }
-          console.log('Pets:', pets);
+          //console.log('Pets:', pets);
           // 3. Get providers with user info
           db.all(
             `
@@ -491,7 +497,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
                 if (err) {
                   console.error(err);
                 }
-                console.log("Bookings:", bookings);
+                //console.log("Bookings:", bookings);
                 // 4. Render dashboard
                 res.render('pet_owner_dashboard', {
                   title: 'Pet Owner Dashboard',
@@ -668,7 +674,7 @@ router.post('/pets/:petId/delete', auth, (req, res) => {
 router.post('/pet-owner/bookings', auth, (req, res) => {
   // const providerId = req.params.providerId;
   const { pet_id, provider_id, start_time, end_time, price_per_service } = req.body;
-  console.log('Booking data:', req.body);
+  //console.log('Booking data:', req.body);
   db.run(`
     INSERT INTO bookings (pet_id, provider_id, start_time, end_time, status, price, payment_status) 
     VALUES (?, ?, ?, ?, 'pending', ?, 'pending')
@@ -722,9 +728,10 @@ router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
   `, [bookingId, providerId], (err, booking) => {
     if (err) return res.status(500).send('Database error');
     if (!booking || booking.owner_id !== userId) {
-      res.render('msg',{
-        title:'You are not authorized to review this booking',
-        user:req.session.user
+      res.render('msg', {
+        title: 'You are not authorized to review this booking',
+        user: req.session.user,
+        backUrl: '/pet-owner/dashboard'
       })
     }
 
@@ -742,13 +749,14 @@ router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
 router.post('/ratings', auth, async (req, res) => {
   try {
     const { booking_id, provider_id, rating, review_text } = req.body;
-    console.log('Rating data:', req.body);
+    // console.log('Rating data:', req.body);
 
     // Basic validation
     if (!booking_id || !rating) {
       return res.status(400).render('msg', {
         title: 'Rating and booking are required',
-        user: req.session.user
+        user: req.session.user,
+        backUrl: '/pet-owner/dashboard'
       });
     }
 
@@ -767,7 +775,8 @@ router.post('/ratings', auth, async (req, res) => {
     if (existingReview) {
       return res.render('msg', {
         title: 'You have already reviewed this booking',
-        user: req.session.user
+        user: req.session.user,
+        backUrl: '/pet-owner/dashboard'
       });
     }
 
@@ -832,7 +841,8 @@ router.post('/ratings', auth, async (req, res) => {
     // Redirect after success
     res.render('msg', {
       title: 'Thank you for your feedback!',
-      user: req.session.user
+      user: req.session.user,
+      backUrl: '/pet-owner/dashboard'
     });
 
   } catch (err) {
