@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 const db = require("../db/database");
 const auth = require('./middleware/auth');
 const moment = require('moment');
-const updateBookingStatus = require('./updateBookings');
-const checkcompletedBookings = require('./updateBookings')
+const { updateBookingStatus, checkcompletedBookings } = require('./updateBookings');
+
 
 const multer = require('multer');
 const path = require('path');
@@ -81,6 +81,7 @@ router.post('/login', async (req, res) => {
       };
       //Update booking status after login
       await updateBookingStatus(db);
+
       // Pet owner
       if (user.user_type === 'pet_owner') {
         // const completedBookings = await checkcompletedBookings(db, user.user_id);
@@ -475,7 +476,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
                 console.error(err);
                 return res.status(500).send('Error loading providers');
               }
-              console.log('Providers:', providers);
+             // console.log('Providers:', providers);
               db.all(`
              SELECT
               b.booking_id,
@@ -494,6 +495,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
             INNER JOIN providers r ON r.provider_id = b.provider_id
             INNER JOIN users u ON u.user_id = r.user_id
             WHERE p.owner_id = ?
+            ORDER BY b.status, b.start_time, b.end_time
                 `, req.session.user.id, (err, bookings) => {
                 if (err) {
                   console.error(err);
