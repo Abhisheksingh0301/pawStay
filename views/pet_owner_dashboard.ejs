@@ -108,12 +108,12 @@
                             <label class="block text-sm font-medium text-gray-700">Pet Type</label>
                             <select name="pet_type" required
                                 class="mt-1 w-full rounded border border-gray-700 px-2 py-1">
-                              <option value="Dog">Dog</option>
-                            <option value="Cat">Cat</option>
-                            <option value="Rabbit">Rabbit</option>
-                            <option value="Bird">Bird</option>
-                            <option value="Fish">Fish</option>
-                            <option value="Other">Other</option>
+                                <option value="Dog">Dog</option>
+                                <option value="Cat">Cat</option>
+                                <option value="Rabbit">Rabbit</option>
+                                <option value="Bird">Bird</option>
+                                <option value="Fish">Fish</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
 
@@ -215,7 +215,7 @@
 
                                     <!-- Profile Image -->
                                     <img src="<%= provider.provider_profile_picture || '/images/pawstay-logo.png' %>"
-                                        alt="Profile Picture" class="w-40 h-full object-cover" />
+                                        alt="Profile Picture" class="w-50 h-full object-cover" />
 
                                     <!-- Content -->
                                     <div class="flex flex-col justify-between flex-1 p-4 text-white">
@@ -259,6 +259,11 @@
                                                         $&nbsp;<%= provider.price_per_service %>
                                                     </p>
                                                     <% } %>
+                                                <% if (provider.location) { %>
+                                                    <p><span class="font-semibold">Location :</span>
+                                                        <%= provider.location %>
+                                                    </p>
+                                                    <% } %>
 
                                                         <% if (provider.rating !==null) { %>
                                                             <p><span class="font-semibold">Rating:</span>
@@ -270,8 +275,7 @@
 
                                         <!-- Button -->
                                         <div class="mt-3 flex justify-end">
-                                            <a href="/pet-owner/bookings/<%= provider.provider_id %>"
-                                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded font-semibold text-sm">
+                                            <a href="/pet-owner/bookings/<%= provider.provider_id %>" class="bg-green-500 hover:bg-green-600 hover:scale-105 hover:shadow-lg text-white px-4 py-1.5 rounded font-semibold text-sm transition-all duration-300 ease-in-out">
                                                 Booking
                                             </a>
                                         </div>
@@ -331,12 +335,16 @@
                                                     <span class="font-semibold">Price:</span>
                                                     $&nbsp;<%= booking.price %>
                                                 </p>
-
                                                 <p>
+                                                    <span class="font-semibold">Location:</span>
+                                                    <%= booking.location %>
+                                                </p>
+
+                                                <p class="mt-3">
                                                     <span class="font-semibold">Status:</span>
                                                     <span class=" rounded-full px-3 py-1 bg-blue-600 font-semibold  
                                         <%= booking.status === 'pending' ? 'text-yellow-400' :
-                                            booking.status === 'approved' ? 'text-green-400' :
+                                            booking.status === 'confirmed' ? 'text-green-400' :
                                             booking.status === 'completed' ? 'text-blue-400' :
                                             'text-red-400' %>
                                     ">

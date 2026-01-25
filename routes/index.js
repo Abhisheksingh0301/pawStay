@@ -487,8 +487,10 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
               b.status,
               b.payment_status,
               p.pet_name,
+              p.pet_type,
               u.first_name AS provider_first_name,
               u.last_name AS provider_last_name,
+              u.location,
               r.profile_picture AS provider_profile_picture
             FROM bookings b
             INNER JOIN pets p ON b.pet_id = p.pet_id
@@ -724,9 +726,14 @@ router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
   const { bookingId, providerId } = req.params;
 
   db.get(`
-    SELECT b.*, p.owner_id
+    SELECT b.*, p.owner_id,UPPER(SUBSTR(u.first_name, 1, 1)) || LOWER(SUBSTR(u.first_name, 2)) ||
+    ' ' ||
+    UPPER(SUBSTR(u.last_name, 1, 1)) || LOWER(SUBSTR(u.last_name, 2)) 
+    AS provider_name
     FROM bookings b
     INNER JOIN pets p ON b.pet_id = p.pet_id
+	  INNER JOIN providers r ON r.provider_id=b.provider_id
+	  INNER JOIN users u ON u.user_id=r.user_id
     WHERE b.booking_id = ? AND b.provider_id = ? AND b.status = 'completed'
   `, [bookingId, providerId], (err, booking) => {
     if (err) return res.status(500).send('Database error');
@@ -740,8 +747,7 @@ router.get('/ratings/:bookingId/:providerId', auth, (req, res) => {
 
     res.render('ratings', {
       title: 'Rate Your Experience',
-      bookingId,
-      providerId,
+      booking,
       user: req.session.user
     });
   });

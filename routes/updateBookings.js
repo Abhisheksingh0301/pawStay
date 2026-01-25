@@ -6,7 +6,7 @@ const updateBookingStatus = async (db) => {
     const sql = `
         UPDATE bookings
         SET status = 'completed'
-        WHERE status != 'completed'
+        WHERE status = 'confirmed'
           AND end_time IS NOT NULL
           AND datetime(replace(end_time, 'T', ' ')) < CURRENT_TIMESTAMP
     `;
