@@ -1,7 +1,7 @@
 // updateBookings.js
 
 const updateBookingStatus = async (db) => {
-        const sql = `
+    const completeSql = `
         UPDATE bookings
         SET status = 'completed'
         WHERE status = 'confirmed'
@@ -9,13 +9,36 @@ const updateBookingStatus = async (db) => {
           AND datetime(replace(end_time, 'T', ' ')) < CURRENT_TIMESTAMP
     `;
 
+    const cancelSql = `
+        UPDATE bookings
+        SET status = 'cancelled'
+        WHERE status = 'pending'
+          AND start_time IS NOT NULL
+          AND datetime(replace(start_time, 'T', ' ')) < CURRENT_TIMESTAMP
+    `;
+
     return new Promise((resolve, reject) => {
-        db.run(sql, function (err) {
-            if (err) return reject(err);
-            resolve(this.changes);
+        db.serialize(() => {
+            db.run(completeSql, function (err) {
+                if (err) return reject(err);
+
+                const completedCount = this.changes;
+
+                db.run(cancelSql, function (err) {
+                    if (err) return reject(err);
+
+                    const cancelledCount = this.changes;
+
+                    resolve({
+                        completed: completedCount,
+                        cancelled: cancelledCount
+                    });
+                });
+            });
         });
     });
 };
+
 
 const checkcompletedBookings = async (db, userId) => {
     const sql = `

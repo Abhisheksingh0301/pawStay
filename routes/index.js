@@ -69,8 +69,10 @@ router.post('/login', async (req, res) => {
       const match = await bcrypt.compare(txtpwd, user.password);
       if (!match) {
         console.log("Invalid password");
-        return res.render('msg', { title: 'Invalid password', user: req.session.user || null, 
-          backUrl: '/login' });
+        return res.render('msg', {
+          title: 'Invalid password', user: req.session.user || null,
+          backUrl: '/login'
+        });
       }
 
       // Save user info in session
@@ -79,8 +81,14 @@ router.post('/login', async (req, res) => {
         first_name: user.first_name,
         user_type: user.user_type
       };
-      //Update booking status after login
-      await updateBookingStatus(db);
+      try {
+        //Update booking status after login
+        const { completed, cancelled } = await updateBookingStatus(db);
+        console.log(`Completed: ${completed}, Cancelled: ${cancelled}`);
+
+      } catch {
+        console.error('Failed to update booking status:', err);
+      }
 
       // Pet owner
       if (user.user_type === 'pet_owner') {
@@ -96,7 +104,7 @@ router.post('/login', async (req, res) => {
       if (user.user_type === 'provider') {
         db.get('SELECT * FROM providers WHERE user_id = ?', [user.user_id], (err, provider) => {
           if (err) return res.status(500).send('Error loading provider');
-         
+
           db.all(`
             SELECT * from bookings b
               INNER JOIN pets t ON b.pet_id = t.pet_id
@@ -254,11 +262,13 @@ router.get('/pet_sitter_dashboard', auth, (req, res) => {
           }
 
           db.all(
-            ` SELECT * from bookings b
-               INNER JOIN pets t ON b.pet_id = t.pet_id
-               INNER JOIN users owner ON t.owner_id = owner.user_id   
-              INNER JOIN providers p ON b.provider_id = p.provider_id
-			        WHERE p.user_id=?`,
+            ` 
+                SELECT * from bookings b
+                INNER JOIN pets t ON b.pet_id = t.pet_id
+                INNER JOIN users owner ON t.owner_id = owner.user_id   
+                INNER JOIN providers p ON b.provider_id = p.provider_id
+			          WHERE p.user_id=?
+              `,
             [req.session.user.id],
             (err, bookings) => {
               if (err) {
@@ -476,7 +486,7 @@ router.get('/pet-owner/dashboard', auth, (req, res) => {
                 console.error(err);
                 return res.status(500).send('Error loading providers');
               }
-             // console.log('Providers:', providers);
+              // console.log('Providers:', providers);
               db.all(`
              SELECT
               b.booking_id,
@@ -613,7 +623,7 @@ router.post('/pets/add', auth, (req, res) => {
     behavior_notes,
     medical_records
   } = req.body;
-console.log(req.body);
+  console.log(req.body);
   db.run(
     `INSERT INTO pets (
       owner_id, pet_name, pet_type, breed, size, age, allergies, behavior_notes, medical_records

@@ -60,7 +60,7 @@ db.serialize(() => {
     provider_id INTEGER NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
-    status TEXT NOT NULL CHECK (status IN ('pending', 'confirmed', 'completed', 'canceled')),
+    status TEXT NOT NULL CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
     price REAL CHECK (price >= 0),
     payment_status TEXT NOT NULL CHECK (payment_status IN ('paid', 'pending', 'failed')),
     reviewed INTEGER DEFAULT 0 CHECK (reviewed IN (0,1)),

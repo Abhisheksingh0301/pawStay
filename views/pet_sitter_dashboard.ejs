@@ -163,9 +163,10 @@
 
                       <div class="py-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                         <p><strong>Pet Owner:</strong>
-                          <%= b.first_name %>
-                            <%= b.last_name %>
+                          <%= (b.first_name + ' ' + b.last_name) .toLowerCase() .replace(/\b\w/g, c=> c.toUpperCase())
+                            %>
                         </p>
+
                         <p><strong>Pet Name:</strong>
                           <%= b.pet_name %>
                         </p>
@@ -199,7 +200,7 @@
                   b.status === 'pending'   ? 'bg-yellow-500 text-yellow-900' :
                   b.status === 'confirmed' ? 'bg-blue-500 text-white' :
                   b.status === 'completed' ? 'bg-green-500 text-white' :
-                  b.status === 'canceled'  ? 'bg-red-500 text-white' :
+                  b.status === 'cancelled'  ? 'bg-red-500 text-white' :
                                               'bg-gray-400 text-white'
                 %>">
                             <%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %>
@@ -207,23 +208,27 @@
                         </p>
                       </div>
 
-                      <div class="text-right space-x-2">
-                        <form action="/pet-sitter/approve-booking/<%= b.booking_id %>" method="POST"
-                          onsubmit="return confirm('Are you sure you want to approve this booking?');" class="inline">
-                          <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
-                            <i class="fa-solid fa-check"></i> Confirm
-                          </button>
-                        </form>
+                      <% if (b.status==='pending' ) { %>
+                        <div class="text-right space-x-2">
+                          <form action="/pet-sitter/approve-booking/<%= b.booking_id %>" method="POST"
+                            onsubmit="return confirm('Are you sure you want to approve this booking?');" class="inline">
+                            <button
+                              class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-semibold">
+                              <i class="fa-solid fa-check"></i> Confirm
+                            </button>
+                          </form>
 
-                        <form action="/pet-sitter/cancel-booking/<%= b.booking_id %>" method="POST"
-                          onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="inline">
-                          <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold">
-                            <i class="fa-solid fa-xmark"></i> Cancel
-                          </button>
-                        </form>
-                      </div>
+                          <form action="/pet-sitter/cancel-booking/<%= b.booking_id %>" method="POST"
+                            onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="inline">
+                            <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold">
+                              <i class="fa-solid fa-xmark"></i> Cancel
+                            </button>
+                          </form>
+                        </div>
+                        <% } %>
 
-                      <% }) %>
+
+                          <% }) %>
                   </ul>
 
                   <% } %>
