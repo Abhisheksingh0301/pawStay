@@ -1,9 +1,7 @@
 // updateBookings.js
 
 const updateBookingStatus = async (db) => {
-    console.log('🔥 updateBookingStatus CALLED');
-
-    const sql = `
+        const sql = `
         UPDATE bookings
         SET status = 'completed'
         WHERE status = 'confirmed'

@@ -1,88 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>
-        <%= title %>
-    </title>
+    <title><%= title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/tailwind/output.css" rel="stylesheet">
 </head>
 
-<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/images/pet-sitter.jpg');">
-
+<body class="min-h-screen bg-linear-to-br from-indigo-900 via-purple-900 to-pink-800 bg-cover bg-center bg-no-repeat bg-fixed" style="background-image: url('/images/pet-sitter.jpg');">
+    
     <%- include('header') %>
 
-        <div class="flex items-center justify-center min-h-screen bg-black/40">
-            <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-lg">
-
-                <h2 class="text-2xl font-bold text-center text-gray-800 mb-2 font-serif ">
-                    Rate Your Experience 🐾
-                </h2>
-                <div class="mb-10">
-                    <p class="text-center text-gray-500 mb-2 float-left">
-                        Booking ID: <span class="font-semibold">
-                            <%= booking.booking_id %>
-                        </span>
-                    </p>
-                    <p class="text-center text-gray-500 mb-2 float-right">
-                        Pet Sitter : <span class="font-semibold">
-                            <%= booking.provider_name %>
-                        </span>
-                    </p>
+    <div class="flex items-start justify-center min-h-screen pt-12 pb-8 px-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-6 w-full max-w-md">
+            
+            <!-- Header - Compact -->
+            <div class="text-center mb-4 pb-3">
+                <div class="inline-flex items-center justify-center w-14 h-14 bg-linear-to-r from-yellow-400 to-orange-400 rounded-2xl shadow-lg mb-3 mx-auto">
+                    <span class="text-xl">🐾</span>
                 </div>
-                <hr>
-                <form action="/ratings" method="POST" class="space-y-6">
-
-                    <!-- Hidden booking id -->
-                    <input type="hidden" name="booking_id" value="<%= bookingId %>">
-                    <input type="hidden" name="provider_id" value="<%= providerId %>">
-
-                    <!-- Rating -->
+                <h2 class="text-xl font-bold text-gray-800 mb-2 font-serif">
+                    Rate Your Experience
+                </h2>
+                <div class="grid grid-cols-2 gap-3 p-2.5 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg">
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">
-                            Rating
-                        </label>
-
-                        <div class="flex justify-between">
-                            <% for(let i=1; i <=5; i++) { %>
-                                <label class="flex flex-col items-center cursor-pointer">
-                                    <input type="radio" name="rating" value="<%= i %>" class="hidden peer" required>
-                                    <span class="text-3xl peer-checked:text-yellow-400 text-gray-300 transition">
-                                        ★
-                                    </span>
-                                    <span class="text-xs text-gray-500">
-                                        <%= i %>
-                                    </span>
-                                </label>
-                                <% } %>
-                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Booking ID</p>
+                        <p class="font-bold text-gray-900 text-sm"><%= booking.booking_id %></p>
                     </div>
-
-                    <!-- Review Text -->
                     <div>
-                        <label class="block text-gray-700 font-medium mb-2">
-                            Review
-                        </label>
-                        <textarea name="review_text" rows="4" placeholder="Share your experience with the pet sitter..."
-                            class="w-full border border-gray-300 rounded-lg p-3 focus:ring focus:ring-blue-300 focus:outline-none resize-none"></textarea>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Pet Sitter</p>
+                        <p class="font-bold text-gray-900 text-sm"><%= booking.provider_name %></p>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Submit -->
+            <form action="/ratings" method="POST" class="space-y-4">
+                
+                <!-- Hidden inputs -->
+                <input type="hidden" name="booking_id" value="<%= booking.booking_id %>">
+                <input type="hidden" name="provider_id" value="<%= booking.provider_id %>">
+
+                <!-- Rating Stars -->
+                <div>
+                    <label class="block text-base font-bold text-gray-800 mb-2">
+                        Your Rating
+                    </label>
+                    <div class="flex justify-center gap-1">
+                        <% for(let i=1; i <=5; i++) { %>
+                        <label class="flex flex-col items-center p-1.5 rounded-lg cursor-pointer hover:bg-yellow-50 group">
+                            <input type="radio" name="rating" value="<%= i %>" class="hidden peer" required>
+                            <span class="text-xl peer-checked:text-yellow-400 group-hover:text-yellow-400 transition-all">
+                                ★
+                            </span>
+                            <span class="text-xs font-medium text-gray-600 mt-1"><%= i %></span>
+                        </label>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Review Textarea -->
+                <div>
+                    <label class="block text-base font-bold text-gray-800 mb-1.5">
+                        Your Review
+                    </label>
+                    <textarea 
+                        name="review_text" 
+                        rows="3" 
+                        placeholder="Share your experience..."
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:outline-none resize-vertical text-sm leading-relaxed"
+                    ></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-1">
                     <button type="submit"
-                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 cursor-pointer transition">
-                        Submit Review
+                        class="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-2.5 px-4 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-1.5">
+                        <span>Submit Review</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
                     </button>
                     <a href="/pet-owner/dashboard"
-                        class="block text-center mt-2 text-gray-600 hover:text-gray-800 font-medium transition">
-                        Submit later
+                        class="block w-full text-center py-2 mt-2.5 text-indigo-600 hover:text-indigo-800 font-semibold bg-white hover:bg-gray-50 rounded-lg border border-indigo-200 hover:border-indigo-300 transition-all duration-200 text-sm">
+                        Submit Later
                     </a>
-                </form>
-
-            </div>
+                </div>
+            </form>
         </div>
-
+    </div>
 </body>
-
 </html>
